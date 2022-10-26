@@ -1,11 +1,13 @@
 package entities
 
-type Manic struct {
-	ID   string `db:"id"`
-	Date string `db:"event_date"`
+type Event struct {
+	ID       string `db:"id"`
+	Date     string `db:"date"`
+	Type     string `db:"type"`
+	TelegaID int64  `db:"telega_id"`
 }
 
-type Massage struct {
-	ID   string `db:"id"`
-	Date string `db:"event_date"`
+type EventAll struct {
+	Date string
+	Type string
 }

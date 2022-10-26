@@ -19,40 +19,23 @@ func NewEventStorage(db *sqlx.DB) Storage {
 	return &eventStorage{db: db}
 }
 
-func (e *eventStorage) SaveManic(ctx context.Context, m *entities.Manic) error {
-	q := `INSERT INTO manic (event_date) VALUES (?)`
+func (e *eventStorage) Save(ctx context.Context, m *entities.Event) error {
+	q := `INSERT INTO event (date, type, telega_id) VALUES (?, ?, ?)`
 
-	if _, err := e.db.ExecContext(ctx, q, m.Date); err != nil {
-		return fmt.Errorf("can't save manic: %w", err)
+	if _, err := e.db.ExecContext(ctx, q, m.Date, m.Type, m.TelegaID); err != nil {
+		return fmt.Errorf("can't save event: %w", err)
 	}
 
 	return nil
 }
 
-func (e *eventStorage) SaveMassage(ctx context.Context, m *entities.Massage) error {
-	q := `INSERT INTO massage (event_date) VALUES (?)`
+func (e *eventStorage) GetAll(ctx context.Context) ([]entities.Event, error) {
+	var events []entities.Event
 
-	if _, err := e.db.ExecContext(ctx, q, m.Date); err != nil {
-		return fmt.Errorf("can't save massage: %w", err)
+	query := fmt.Sprintf("SELECT id, date, type, telega_id FROM event")
+	if err := e.db.SelectContext(ctx, &events, query); err != nil {
+		return events, err
 	}
 
-	return nil
-}
-
-func (e *eventStorage) GetAllEvents(ctx context.Context) ([]entities.Manic, []entities.Massage, error) {
-	var manics []entities.Manic
-
-	query := fmt.Sprintf("SELECT id, event_date FROM manic")
-	if err := e.db.SelectContext(ctx, &manics, query); err != nil {
-		return nil, nil, err
-	}
-
-	var massages []entities.Massage
-
-	query = fmt.Sprintf("SELECT id, event_date FROM massage")
-	if err := e.db.SelectContext(ctx, &massages, query); err != nil {
-		return nil, nil, err
-	}
-
-	return manics, massages, nil
+	return events, nil
 }

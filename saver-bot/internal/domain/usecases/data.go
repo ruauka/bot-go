@@ -12,14 +12,18 @@ const (
 )
 
 const (
+	Massage           = "Массаж"
+	Manic             = "Маникюр"
+	HelloMsg          = "⬇ Привет, выбери пункт меню"
+	MainMenu          = "Главное меню"
 	SignDate          = "Укажи дату. Формат: dd.mm.yyyy 🗓"
 	SignTime          = "Укажи время. Формат: hh:mm 🕔"
 	SaveUpdate        = "Cохранил. Напомню тебе 👌"
 	DBProblem         = "Проблема с БД ❌"
 	WrongDateFormat   = "Некорректный формат даты ❌🗓"
 	WrongTimeFormat   = "Некорректный формат времени ❌🕔"
-	EmptyManic        = "Пока у тебя нет записей на маникюр 🤷‍♀"
-	EmptyMassage      = "Пока у тебя нет записей на массаж 🤷‍♀"
+	EmptyManic        = "Пока нет записей на маникюр 🤷‍♀💆‍♀"
+	EmptyMassage      = "Пока нет записей на массаж 🤷‍♀💅"
 	OtherMessagesPlug = "Ой, давай не сейчас..."
 )
 
@@ -39,7 +43,7 @@ var (
 	MassageState = NewMassageState()
 	ManicState   = NewManicState()
 
-	MainMenu = tg.NewReplyKeyboard(
+	MainMenuButtons = tg.NewReplyKeyboard(
 		tg.NewKeyboardButtonRow(
 			tg.NewKeyboardButton("💆‍♀ Массаж"),
 			tg.NewKeyboardButton("💅 Маникюр"),
@@ -48,7 +52,7 @@ var (
 )
 
 func IsMenuButton(text string) string {
-	for _, buttonName := range MainMenu.Keyboard[0] {
+	for _, buttonName := range MainMenuButtons.Keyboard[0] {
 		if buttonName.Text == text {
 			return buttonName.Text
 		}

@@ -32,15 +32,12 @@ func NewSqliteConnect() (*sqlx.DB, error) {
 
 func Init(ctx context.Context, db *sqlx.DB) error {
 	q := `
-		CREATE TABLE IF NOT EXISTS manic (
+		CREATE TABLE IF NOT EXISTS event (
 		    id INTEGER PRIMARY KEY,
-		    event_date TEXT
-		);
-		CREATE TABLE IF NOT EXISTS massage (
-		    id INTEGER PRIMARY KEY,
-		    event_date TEXT
-		);
-		`
+		    date varchar(255),
+		    type varchar(255),
+		    telega_id varchar(255)
+		);`
 
 	_, err := db.ExecContext(ctx, q)
 	if err != nil {
