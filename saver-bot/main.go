@@ -19,14 +19,14 @@ func main() {
 		log.Fatalf("failed to connect telegram: %s", err.Error())
 	}
 
-	mqConn, err := rabbitmq.NewRabbitMQConnect()
+	conn, err := rabbitmq.NewRabbitMQConnect()
 	if err != nil {
 		log.Fatal(fmt.Sprintf("failed to connect to RabbitMQ: %s", err.Error()))
 	}
 
-	defer func() { _ = mqConn.Close() }()
+	defer func() { _ = conn.Close() }()
 
-	mq := queue.NewQueue(bot, mqConn)
+	mq := queue.NewQueue(bot, conn)
 
 	db, err := sqlite.NewSqliteConnect()
 	if err != nil {

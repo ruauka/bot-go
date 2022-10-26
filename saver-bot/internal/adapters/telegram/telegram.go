@@ -35,29 +35,17 @@ func (a *App) Start(updates tg.UpdatesChannel) {
 			continue
 		}
 
-		if update.Message.Text == usecases.MainMenu.Keyboard[0][1].Text {
-			a.usecase.MainMenuHandle(&update, usecases.ManicState)
+		if button := usecases.IsMenuButton(update.Message.Text); button != "" {
+			a.usecase.MenuButtonsHandle(&update, button)
 			continue
 		}
 
-		if update.Message.Text == usecases.MainMenu.Keyboard[0][0].Text {
-			a.usecase.MainMenuHandle(&update, usecases.MassageState)
-			continue
-		}
-
-		manicState, ok := usecases.ManicState[update.Message.From.ID]
-		if ok {
-			a.usecase.ManicureHandle(&update, manicState)
-			continue
-		}
-
-		massageState, ok := usecases.MassageState[update.Message.From.ID]
-		if ok {
-			a.usecase.MassageHandle(&update, massageState)
+		if chatState := usecases.IsChatState(update.Message.From.ID); chatState != nil {
+			a.usecase.ChatStateHandle(&update, chatState)
 			continue
 		}
 
 		fmt.Println(update.Message.From.UserName, update.Message.Text)
-		a.usecase.MakeResponse(&update, "Ой, давай не сейчас...")
+		a.usecase.MakeResponse(&update, usecases.OtherMessagesPlug)
 	}
 }

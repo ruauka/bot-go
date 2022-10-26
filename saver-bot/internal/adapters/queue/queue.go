@@ -12,19 +12,19 @@ type Queue interface {
 }
 
 type queue struct {
-	bot    *tg.BotAPI
-	mqConn *amqp.Connection
+	bot  *tg.BotAPI
+	conn *amqp.Connection
 }
 
 func NewQueue(bot *tg.BotAPI, mq *amqp.Connection) Queue {
 	return &queue{
-		bot:    bot,
-		mqConn: mq,
+		bot:  bot,
+		conn: mq,
 	}
 }
 
 func (mq *queue) QueueChanListen() {
-	ch, err := mq.mqConn.Channel()
+	ch, err := mq.conn.Channel()
 	if err != nil {
 		log.Fatalf("failed to open a channel: %s", err.Error())
 	}
@@ -45,7 +45,7 @@ func (mq *queue) QueueChanListen() {
 		log.Fatalf("failed to declare a queue: %s", err.Error())
 	}
 
-	msgs, err := ch.Consume(
+	messages, err := ch.Consume(
 		q.Name, // queue
 		"",     // consumer
 		true,   // auto-ack
@@ -64,7 +64,7 @@ func (mq *queue) QueueChanListen() {
 	// 394622071 с
 
 	go func() {
-		for d := range msgs {
+		for d := range messages {
 			log.Printf("Received a message: %s", d.Body)
 			msg := tg.NewMessage(394622071, string(d.Body))
 			mq.bot.Send(msg)

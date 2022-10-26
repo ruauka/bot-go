@@ -12,20 +12,22 @@ const (
 )
 
 const (
-	SignDate        = "Укажи дату. Формат: dd.mm.yyyy 🗓"
-	SignTime        = "Укажи время. Формат: hh:mm 🕔"
-	SaveUpdate      = "Cохранил. Напомню тебе 👌"
-	DBProblem       = "Проблема с БД ❌"
-	WrongDateFormat = "Некорректный формат даты ❌🗓"
-	WrongTimeFormat = "Некорректный формат времени ❌🕔"
-	EmptyManic      = "Пока у тебя нет записей на маникюр 🤷‍♀"
-	EmptyMassage    = "Пока у тебя нет записей на массаж 🤷‍♀"
+	SignDate          = "Укажи дату. Формат: dd.mm.yyyy 🗓"
+	SignTime          = "Укажи время. Формат: hh:mm 🕔"
+	SaveUpdate        = "Cохранил. Напомню тебе 👌"
+	DBProblem         = "Проблема с БД ❌"
+	WrongDateFormat   = "Некорректный формат даты ❌🗓"
+	WrongTimeFormat   = "Некорректный формат времени ❌🕔"
+	EmptyManic        = "Пока у тебя нет записей на маникюр 🤷‍♀"
+	EmptyMassage      = "Пока у тебя нет записей на массаж 🤷‍♀"
+	OtherMessagesPlug = "Ой, давай не сейчас..."
 )
 
 type State struct {
-	State int // 0 - date, 1 - time
-	Date  string
-	Time  string
+	ChatName string
+	State    int // 0 - date, 1 - time
+	Date     string
+	Time     string
 }
 
 var (
@@ -45,10 +47,36 @@ var (
 	)
 )
 
-func NewMassageState() map[int64]*State {
-	return make(map[int64]*State)
+func IsMenuButton(text string) string {
+	for _, buttonName := range MainMenu.Keyboard[0] {
+		if buttonName.Text == text {
+			return buttonName.Text
+		}
+	}
+
+	return ""
+}
+
+func IsChatState(userID int64) *State {
+	manicState, ok := ManicState[userID]
+	if ok {
+		manicState.ChatName = "Маникюр"
+		return manicState
+	}
+
+	massageState, ok := MassageState[userID]
+	if ok {
+		massageState.ChatName = "Массаж"
+		return massageState
+	}
+
+	return nil
 }
 
 func NewManicState() map[int64]*State {
+	return make(map[int64]*State)
+}
+
+func NewMassageState() map[int64]*State {
 	return make(map[int64]*State)
 }
