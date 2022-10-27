@@ -1,10 +1,15 @@
 package queue
 
 import (
+	"encoding/json"
+	"fmt"
 	"log"
 
 	tg "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	amqp "github.com/rabbitmq/amqp091-go"
+
+	"saver-bot/internal/domain/entities"
+	"saver-bot/internal/domain/usecases"
 )
 
 type Queue interface {
@@ -60,14 +65,30 @@ func (mq *queue) QueueChanListen() {
 
 	var forever chan struct{}
 
-	// 202460681 м
-	// 394622071 с
-
 	go func() {
 		for d := range messages {
+			var event entities.Event
+
+			err := json.Unmarshal(d.Body, &event)
+			if err != nil {
+				log.Fatalf("queue unmarshal message err %s", err)
+			}
+
+			if event.Type == usecases.Manic {
+				msg := tg.NewMessage(event.TelegaID,
+					fmt.Sprintf("Напоминаю. У тебя сегодня %s в %s 💅", "маникюр", event.Date[11:]),
+				)
+				mq.bot.Send(msg)
+			}
+
+			if event.Type == usecases.Massage {
+				msg := tg.NewMessage(event.TelegaID,
+					fmt.Sprintf("Напоминаю. У тебя сегодня %s в %s 💆‍♀", "массаж", event.Date[11:]),
+				)
+				mq.bot.Send(msg)
+			}
+
 			log.Printf("Received a message: %s", d.Body)
-			msg := tg.NewMessage(394622071, string(d.Body))
-			mq.bot.Send(msg)
 		}
 	}()
 

@@ -36,6 +36,7 @@ func Init(ctx context.Context, db *sqlx.DB) error {
 		    id INTEGER PRIMARY KEY,
 		    date varchar(255),
 		    type varchar(255),
+		    username varchar(255),
 		    telega_id varchar(255)
 		);`
 

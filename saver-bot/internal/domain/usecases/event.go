@@ -83,6 +83,7 @@ func (e *event) ChatStateHandle(update *tg.Update, state *State) {
 			payload = &entities.Event{
 				Date:     concat(update, ManicState),
 				Type:     state.ChatName,
+				Username: update.Message.From.UserName,
 				TelegaID: update.Message.From.ID,
 			}
 		}
@@ -93,6 +94,7 @@ func (e *event) ChatStateHandle(update *tg.Update, state *State) {
 			payload = &entities.Event{
 				Date:     concat(update, MassageState),
 				Type:     state.ChatName,
+				Username: update.Message.From.UserName,
 				TelegaID: update.Message.From.ID,
 			}
 		}
