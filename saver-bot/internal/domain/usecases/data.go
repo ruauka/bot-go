@@ -14,6 +14,8 @@ const (
 const (
 	Massage           = "Массаж"
 	Manic             = "Маникюр"
+	MassageSmall      = "массаж"
+	ManicSmall        = "маникюр"
 	HelloMsg          = "⬇ Привет, выбери пункт меню"
 	MainMenu          = "Главное меню"
 	SignDate          = "Укажи дату. Формат: dd.mm.yyyy 🗓"
@@ -22,8 +24,8 @@ const (
 	DBProblem         = "Проблема с БД ❌"
 	WrongDateFormat   = "Некорректный формат даты ❌🗓"
 	WrongTimeFormat   = "Некорректный формат времени ❌🕔"
-	EmptyManic        = "Пока нет записей на маникюр 🤷‍♀💆‍♀"
-	EmptyMassage      = "Пока нет записей на массаж 🤷‍♀💅"
+	EmptyManic        = "Пока нет записей на маникюр 🤷‍♀💅"
+	EmptyMassage      = "Пока нет записей на массаж 🤷‍♀💆‍♀"
 	OtherMessagesPlug = "Ой, давай не сейчас..."
 )
 

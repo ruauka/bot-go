@@ -17,26 +17,19 @@ type Queue interface {
 }
 
 type queue struct {
-	bot  *tg.BotAPI
-	conn *amqp.Connection
+	bot      *tg.BotAPI
+	ch       *amqp.Channel
+	queue    amqp.Queue
+	messages <-chan amqp.Delivery
 }
 
-func NewQueue(bot *tg.BotAPI, mq *amqp.Connection) Queue {
-	return &queue{
-		bot:  bot,
-		conn: mq,
-	}
-}
-
-func (mq *queue) QueueChanListen() {
-	ch, err := mq.conn.Channel()
+func NewQueue(bot *tg.BotAPI, conn *amqp.Connection) Queue {
+	ch, err := conn.Channel()
 	if err != nil {
 		log.Fatalf("failed to open a channel: %s", err.Error())
 	}
 
 	log.Println("Connect to queue channel: ok")
-
-	defer ch.Close()
 
 	q, err := ch.QueueDeclare(
 		"my_queue_1", // name
@@ -63,34 +56,49 @@ func (mq *queue) QueueChanListen() {
 		log.Fatalf("failed to register a consumer: %s", err.Error())
 	}
 
+	return &queue{
+		bot:      bot,
+		ch:       ch,
+		queue:    q,
+		messages: messages,
+	}
+}
+
+func (mq *queue) QueueChanListen() {
+	defer func() { _ = mq.ch.Close() }()
+
 	var forever chan struct{}
 
 	go func() {
-		for d := range messages {
+		for msg := range mq.messages {
 			var event entities.Event
 
-			err := json.Unmarshal(d.Body, &event)
+			err := json.Unmarshal(msg.Body, &event)
 			if err != nil {
 				log.Fatalf("queue unmarshal message err %s", err)
 			}
 
-			if event.Type == usecases.Manic {
-				msg := tg.NewMessage(event.TelegaID,
-					fmt.Sprintf("Напоминаю. У тебя сегодня %s в %s 💅", "маникюр", event.Date[11:]),
-				)
-				mq.bot.Send(msg)
-			}
+			mq.bot.Send(eventCheck(event))
 
-			if event.Type == usecases.Massage {
-				msg := tg.NewMessage(event.TelegaID,
-					fmt.Sprintf("Напоминаю. У тебя сегодня %s в %s 💆‍♀", "массаж", event.Date[11:]),
-				)
-				mq.bot.Send(msg)
-			}
-
-			log.Printf("Received a message: %s", d.Body)
+			log.Printf("Received a message: %s", msg.Body)
 		}
 	}()
 
 	<-forever
+}
+
+func eventCheck(event entities.Event) tg.MessageConfig {
+	if event.Type == usecases.Manic {
+		return tg.NewMessage(event.TelegaID,
+			fmt.Sprintf("Напоминаю. У тебя сегодня %s в %s 💅", usecases.ManicSmall, event.Date[11:]),
+		)
+	}
+
+	if event.Type == usecases.Massage {
+		return tg.NewMessage(event.TelegaID,
+			fmt.Sprintf("Напоминаю. У тебя сегодня %s в %s 💅", usecases.MassageSmall, event.Date[11:]),
+		)
+	}
+
+	return tg.MessageConfig{}
 }
