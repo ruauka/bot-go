@@ -10,16 +10,16 @@ import (
 )
 
 // userAuthStorage auth storage struct.
-type eventStorage struct {
+type storage struct {
 	db *sqlx.DB
 }
 
-// NewEventStorage auth storage func builder.
-func NewEventStorage(db *sqlx.DB) EventStorage {
-	return &eventStorage{db: db}
+// NewStorage auth storage func builder.
+func NewStorage(db *sqlx.DB) Storage {
+	return &storage{db: db}
 }
 
-func (e *eventStorage) Save(ctx context.Context, event *entities.Event) error {
+func (e *storage) Save(ctx context.Context, event *entities.Event) error {
 	query := `INSERT INTO event (date, type, username, telega_id) VALUES (?, ?, ?, ?)`
 
 	if _, err := e.db.ExecContext(ctx, query, event.Date, event.Type, event.Username, event.TelegaID); err != nil {
@@ -29,7 +29,7 @@ func (e *eventStorage) Save(ctx context.Context, event *entities.Event) error {
 	return nil
 }
 
-func (e *eventStorage) GetAll(ctx context.Context) ([]entities.Event, error) {
+func (e *storage) GetAll(ctx context.Context) ([]entities.Event, error) {
 	var events []entities.Event
 
 	query := fmt.Sprintf("SELECT id, date, type, username, telega_id FROM event")

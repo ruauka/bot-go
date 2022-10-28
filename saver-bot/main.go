@@ -33,7 +33,7 @@ func main() {
 		log.Fatal(fmt.Sprintf("failed to init db: %s", err.Error()))
 	}
 
-	storage := s.NewEventStorage(db)
+	storage := s.NewStorage(db)
 
 	usecase := usecases.NewUsecases(storage, bot, mq)
 

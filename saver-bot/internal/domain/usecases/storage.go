@@ -14,10 +14,10 @@ import (
 
 type storageUsecase struct {
 	bot     *tg.BotAPI
-	storage storage.EventStorage
+	storage storage.Storage
 }
 
-func NewStorageUsecase(storage storage.EventStorage, bot *tg.BotAPI) StorageUsecase {
+func NewStorageUsecase(storage storage.Storage, bot *tg.BotAPI) StorageUsecase {
 	return &storageUsecase{
 		bot:     bot,
 		storage: storage,

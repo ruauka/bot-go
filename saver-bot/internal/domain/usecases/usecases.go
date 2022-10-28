@@ -23,7 +23,7 @@ type Usecases struct {
 	Queue   QueueUsecase
 }
 
-func NewUsecases(storage storage.EventStorage, bot *tg.BotAPI, queue queue.Queue) *Usecases {
+func NewUsecases(storage storage.Storage, bot *tg.BotAPI, queue queue.Queue) *Usecases {
 	return &Usecases{
 		Storage: NewStorageUsecase(storage, bot),
 		Queue:   NewQueueUsecase(queue),
