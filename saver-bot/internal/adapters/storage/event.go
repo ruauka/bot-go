@@ -15,7 +15,7 @@ type eventStorage struct {
 }
 
 // NewEventStorage auth storage func builder.
-func NewEventStorage(db *sqlx.DB) Storage {
+func NewEventStorage(db *sqlx.DB) EventStorage {
 	return &eventStorage{db: db}
 }
 

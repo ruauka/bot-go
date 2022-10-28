@@ -12,19 +12,19 @@ import (
 	"saver-bot/internal/domain/entities"
 )
 
-type event struct {
+type storageUsecase struct {
 	bot     *tg.BotAPI
-	storage storage.Storage
+	storage storage.EventStorage
 }
 
-func NewEvent(storage storage.Storage, bot *tg.BotAPI) Event {
-	return &event{
+func NewStorageUsecase(storage storage.EventStorage, bot *tg.BotAPI) StorageUsecase {
+	return &storageUsecase{
 		bot:     bot,
 		storage: storage,
 	}
 }
 
-func (e *event) CommandHandle(update *tg.Update) {
+func (e *storageUsecase) CommandHandle(update *tg.Update) {
 	cmd := update.Message.Command()
 
 	if cmd == "start" {
@@ -42,7 +42,7 @@ func (e *event) CommandHandle(update *tg.Update) {
 	}
 }
 
-func (e *event) MenuButtonsHandle(update *tg.Update, button string) {
+func (e *storageUsecase) MenuButtonsHandle(update *tg.Update, button string) {
 	if button == MainMenuButtons.Keyboard[0][0].Text {
 		MassageState[update.Message.From.ID] = new(State)
 		MassageState[update.Message.From.ID].State = StateDate
@@ -58,7 +58,7 @@ func (e *event) MenuButtonsHandle(update *tg.Update, button string) {
 	log.Printf("[%s] %s", update.Message.From.UserName, update.Message.Text)
 }
 
-func (e *event) ChatStateHandle(update *tg.Update, state *State) {
+func (e *storageUsecase) ChatStateHandle(update *tg.Update, state *State) {
 	switch state.State {
 	case StateDate:
 		if !e.regExpCheck(dateRe, update, WrongDateFormat, SignDate) {
@@ -108,12 +108,12 @@ func (e *event) ChatStateHandle(update *tg.Update, state *State) {
 	}
 }
 
-func (e *event) MakeResponse(update *tg.Update, text string) {
+func (e *storageUsecase) MakeResponse(update *tg.Update, text string) {
 	msg := tg.NewMessage(update.Message.Chat.ID, text)
 	defer func() { _, _ = e.bot.Send(msg) }()
 }
 
-func (e *event) getAllEvents(update *tg.Update) {
+func (e *storageUsecase) getAllEvents(update *tg.Update) {
 	events, err := e.storage.GetAll(context.Background())
 	if err != nil {
 		log.Println(err)
@@ -152,7 +152,7 @@ func (e *event) getAllEvents(update *tg.Update) {
 	}
 }
 
-func (e *event) regExpCheck(pattern *regexp.Regexp, update *tg.Update, incorrect, correct string) bool {
+func (e *storageUsecase) regExpCheck(pattern *regexp.Regexp, update *tg.Update, incorrect, correct string) bool {
 	matched, err := regexp.MatchString(pattern.String(), update.Message.Text)
 	if !matched || err != nil {
 		log.Printf("ошибка регулярки: %s", err)

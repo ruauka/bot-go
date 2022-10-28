@@ -6,7 +6,7 @@ import (
 	"saver-bot/internal/domain/entities"
 )
 
-type Storage interface {
+type EventStorage interface {
 	Save(ctx context.Context, m *entities.Event) error
 	GetAll(ctx context.Context) ([]entities.Event, error)
 	//PickRandom(ctx context.Context, userName string) (*Page, error)

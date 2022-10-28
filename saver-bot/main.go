@@ -35,8 +35,8 @@ func main() {
 
 	storage := s.NewEventStorage(db)
 
-	usecase := usecases.NewEvent(storage, bot)
+	usecase := usecases.NewUsecases(storage, bot, mq)
 
-	app := tg.NewApp(usecase, mq)
+	app := tg.NewApp(usecase)
 	app.Start(updates)
 }

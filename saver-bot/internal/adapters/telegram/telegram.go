@@ -5,25 +5,22 @@ import (
 
 	tg "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 
-	"saver-bot/internal/adapters/queue"
 	"saver-bot/internal/domain/usecases"
 )
 
 type App struct {
-	usecase usecases.Event
-	queue   queue.Queue
+	usecase *usecases.Usecases
 }
 
-func NewApp(usecase usecases.Event, queue queue.Queue) *App {
+func NewApp(usecase *usecases.Usecases) *App {
 	return &App{
 		usecase: usecase,
-		queue:   queue,
 	}
 }
 
 func (a *App) Start(updates tg.UpdatesChannel) {
 
-	go a.queue.QueueChanListen()
+	go a.usecase.Queue.QueueChanListen()
 
 	for update := range updates {
 		if update.Message == nil {
@@ -31,21 +28,21 @@ func (a *App) Start(updates tg.UpdatesChannel) {
 		}
 
 		if update.Message.IsCommand() {
-			a.usecase.CommandHandle(&update)
+			a.usecase.Storage.CommandHandle(&update)
 			continue
 		}
 
 		if button := usecases.IsMenuButton(update.Message.Text); button != "" {
-			a.usecase.MenuButtonsHandle(&update, button)
+			a.usecase.Storage.MenuButtonsHandle(&update, button)
 			continue
 		}
 
 		if chatState := usecases.IsChatState(update.Message.From.ID); chatState != nil {
-			a.usecase.ChatStateHandle(&update, chatState)
+			a.usecase.Storage.ChatStateHandle(&update, chatState)
 			continue
 		}
 
 		fmt.Println(update.Message.From.UserName, update.Message.Text)
-		a.usecase.MakeResponse(&update, usecases.OtherMessagesPlug)
+		a.usecase.Storage.MakeResponse(&update, usecases.OtherMessagesPlug)
 	}
 }
