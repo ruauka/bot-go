@@ -6,6 +6,7 @@ import (
 	tg "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 
 	"saver-bot/internal/domain/usecases"
+	"saver-bot/internal/utils"
 )
 
 type App struct {
@@ -32,12 +33,12 @@ func (a *App) Start(updates tg.UpdatesChannel) {
 			continue
 		}
 
-		if button := usecases.IsMenuButton(update.Message.Text); button != "" {
-			a.usecase.Storage.MenuButtonsHandle(&update, button)
+		if button := utils.IsButton(update.Message.Text); button != "" {
+			a.usecase.Storage.ButtonsHandle(&update, button)
 			continue
 		}
 
-		if chatState := usecases.IsChatState(update.Message.From.ID); chatState != nil {
+		if chatState := utils.IsChatState(update.Message.From.ID); chatState != nil {
 			a.usecase.Storage.ChatStateHandle(&update, chatState)
 			continue
 		}

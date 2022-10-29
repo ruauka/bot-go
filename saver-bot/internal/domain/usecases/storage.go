@@ -42,19 +42,22 @@ func (e *storageUsecase) CommandHandle(update *tg.Update) {
 	}
 }
 
-func (e *storageUsecase) MenuButtonsHandle(update *tg.Update, button string) {
-	if button == MainMenuButtons.Keyboard[0][0].Text {
+func (e *storageUsecase) ButtonsHandle(update *tg.Update, button string) {
+	switch {
+	case button == CancelButton.Keyboard[0][0].Text:
+		delete(ManicState, update.Message.From.ID)
+		delete(MassageState, update.Message.From.ID)
+		e.MakeMarkupResponse(update, MainMenu, "", MainMenuButtons)
+		return
+	case button == MainMenuButtons.Keyboard[0][0].Text:
 		MassageState[update.Message.From.ID] = new(State)
 		MassageState[update.Message.From.ID].State = StateDate
-	}
-
-	if button == MainMenuButtons.Keyboard[0][1].Text {
+	case button == MainMenuButtons.Keyboard[0][1].Text:
 		ManicState[update.Message.From.ID] = new(State)
 		ManicState[update.Message.From.ID].State = StateDate
 	}
 
-	e.MakeResponse(update, SignDate)
-
+	e.MakeMarkupResponse(update, SignDate, "", CancelButton)
 	log.Printf("[%s] %s", update.Message.From.UserName, update.Message.Text)
 }
 
@@ -66,7 +69,7 @@ func (e *storageUsecase) ChatStateHandle(update *tg.Update, state *State) {
 		}
 
 		state.Date = update.Message.Text
-		e.MakeResponse(update, SignTime)
+		e.MakeMarkupResponse(update, SignTime, "", CancelButton)
 		state.State = StateTime
 	default:
 		if !e.regExpCheck(timeRe, update, WrongTimeFormat, SignTime) {
@@ -77,7 +80,8 @@ func (e *storageUsecase) ChatStateHandle(update *tg.Update, state *State) {
 
 		payload := &entities.Event{}
 
-		if state.ChatName == Manic {
+		switch state.ChatName {
+		case Manic:
 			defer delete(ManicState, update.Message.From.ID)
 
 			payload = &entities.Event{
@@ -86,9 +90,7 @@ func (e *storageUsecase) ChatStateHandle(update *tg.Update, state *State) {
 				Username: update.Message.From.UserName,
 				TelegaID: update.Message.From.ID,
 			}
-		}
-
-		if state.ChatName == Massage {
+		case Massage:
 			defer delete(MassageState, update.Message.From.ID)
 
 			payload = &entities.Event{
@@ -104,12 +106,21 @@ func (e *storageUsecase) ChatStateHandle(update *tg.Update, state *State) {
 			e.MakeResponse(update, DBProblem)
 		}
 
-		e.MakeResponse(update, SaveUpdate)
+		e.MakeMarkupResponse(update, MainMenu, SaveUpdate, MainMenuButtons)
 	}
 }
 
 func (e *storageUsecase) MakeResponse(update *tg.Update, text string) {
 	msg := tg.NewMessage(update.Message.Chat.ID, text)
+	defer func() { _, _ = e.bot.Send(msg) }()
+}
+
+func (e *storageUsecase) MakeMarkupResponse(update *tg.Update, text, additionText string, reply tg.ReplyKeyboardMarkup) {
+	msg := tg.NewMessage(update.Message.Chat.ID, text)
+	msg.ReplyMarkup = reply
+	if additionText != "" {
+		msg.Text = additionText
+	}
 	defer func() { _, _ = e.bot.Send(msg) }()
 }
 
@@ -170,3 +181,5 @@ func concat(update *tg.Update, stateMap map[int64]*State) string {
 		stateMap[update.Message.From.ID].Time,
 	)
 }
+
+//msg.ReplyMarkup = tg.NewRemoveKeyboard(false)

@@ -16,8 +16,8 @@ const (
 	Manic             = "Маникюр"
 	HelloMsg          = "⬇ Привет, выбери пункт меню"
 	MainMenu          = "Главное меню"
-	SignDate          = "Укажи дату. Формат: dd.mm.yyyy 🗓"
-	SignTime          = "Укажи время. Формат: hh:mm 🕔"
+	SignDate          = "Шаг [1/2]\n\nУкажи дату. Формат: dd.mm.yyyy 🗓"
+	SignTime          = "Шаг [2/2]\n\nУкажи время. Формат: hh:mm 🕔"
 	SaveUpdate        = "Cохранил. Напомню тебе 👌"
 	DBProblem         = "Проблема с БД ❌"
 	WrongDateFormat   = "Некорректный формат даты ❌🗓"
@@ -49,33 +49,13 @@ var (
 			tg.NewKeyboardButton("💅 Маникюр"),
 		),
 	)
+
+	CancelButton = tg.NewReplyKeyboard(
+		tg.NewKeyboardButtonRow(
+			tg.NewKeyboardButton("Отмена"),
+		),
+	)
 )
-
-func IsMenuButton(text string) string {
-	for _, buttonName := range MainMenuButtons.Keyboard[0] {
-		if buttonName.Text == text {
-			return buttonName.Text
-		}
-	}
-
-	return ""
-}
-
-func IsChatState(userID int64) *State {
-	manicState, ok := ManicState[userID]
-	if ok {
-		manicState.ChatName = "Маникюр"
-		return manicState
-	}
-
-	massageState, ok := MassageState[userID]
-	if ok {
-		massageState.ChatName = "Массаж"
-		return massageState
-	}
-
-	return nil
-}
 
 func NewManicState() map[int64]*State {
 	return make(map[int64]*State)
