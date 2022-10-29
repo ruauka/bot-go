@@ -17,6 +17,8 @@ const (
 	AllCmd            = "all"
 	Massage           = "Массаж"
 	Manic             = "Маникюр"
+	Sport             = "Спорт"
+	Meeting           = "Встреча"
 	HelloMsg          = "⬇ Привет, выбери пункт меню"
 	MainMenu          = "Главное меню"
 	SignDate          = "Шаг [1/2]\n\nУкажи дату. Формат: dd.mm.yyyy 🗓"
@@ -25,8 +27,10 @@ const (
 	DBProblem         = "Проблема с БД ❌"
 	WrongDateFormat   = "Некорректный формат даты ❌🗓"
 	WrongTimeFormat   = "Некорректный формат времени ❌🕔"
-	EmptyManic        = "Пока нет записей на маникюр 🤷‍♀💅"
-	EmptyMassage      = "Пока нет записей на массаж 🤷‍♀💆‍♀"
+	EmptyManic        = "Пока нет записей на маникюр 🤷‍♀"
+	EmptyMassage      = "Пока нет записей на массаж 🤷‍♀"
+	EmptySport        = "Пока нет записей на спорт 🤷‍♀"
+	EmptyMeeting      = "Пока нет встреч 🤷‍♀"
 	OtherMessagesPlug = "Ой, давай не сейчас..."
 )
 
@@ -43,13 +47,25 @@ var (
 )
 
 var (
-	MassageState = NewMassageState()
-	ManicState   = NewManicState()
+	MassageState = NewState()
+	ManicState   = NewState()
+	SportState   = NewState()
+	MeetingState = NewState()
+
+	//Chats = []map[int64]*State{MassageState, ManicState, SportState, MeetingState}
 
 	MainMenuButtons = tg.NewReplyKeyboard(
 		tg.NewKeyboardButtonRow(
 			tg.NewKeyboardButton("💆‍♀ Массаж"),
+		),
+		tg.NewKeyboardButtonRow(
 			tg.NewKeyboardButton("💅 Маникюр"),
+		),
+		tg.NewKeyboardButtonRow(
+			tg.NewKeyboardButton("🏃‍♀ Спорт"),
+		),
+		tg.NewKeyboardButtonRow(
+			tg.NewKeyboardButton("🗓 Встреча"),
 		),
 	)
 
@@ -60,10 +76,6 @@ var (
 	)
 )
 
-func NewManicState() map[int64]*State {
-	return make(map[int64]*State)
-}
-
-func NewMassageState() map[int64]*State {
+func NewState() map[int64]*State {
 	return make(map[int64]*State)
 }
