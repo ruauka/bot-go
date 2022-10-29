@@ -14,8 +14,12 @@ import (
 var (
 	ManicSmall   = "маникюр"
 	MassageSmall = "массаж"
+	SportSmall   = "Спорт"
+	MeetingSmall = "Встреча"
 	Massage      = "Массаж"
 	Manic        = "Маникюр"
+	Sport        = "Спорт"
+	Meeting      = "Встреча"
 )
 
 type queue struct {
@@ -99,6 +103,18 @@ func eventCheck(event entities.Event) tg.MessageConfig {
 	if event.Type == Massage {
 		return tg.NewMessage(event.TelegaID,
 			fmt.Sprintf("Напоминаю. У тебя сегодня %s в %s 💆‍♀", MassageSmall, event.Date[11:]),
+		)
+	}
+
+	if event.Type == Sport {
+		return tg.NewMessage(event.TelegaID,
+			fmt.Sprintf("Напоминаю. У тебя сегодня %s в %s 🏃‍♀", SportSmall, event.Date[11:]),
+		)
+	}
+
+	if event.Type == Meeting {
+		return tg.NewMessage(event.TelegaID,
+			fmt.Sprintf("Напоминаю. У тебя сегодня %s в %s 🗓", MeetingSmall, event.Date[11:]),
 		)
 	}
 
