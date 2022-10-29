@@ -12,6 +12,9 @@ const (
 )
 
 const (
+	StartCmd          = "start"
+	MenuCmd           = "menu"
+	AllCmd            = "all"
 	Massage           = "Массаж"
 	Manic             = "Маникюр"
 	HelloMsg          = "⬇ Привет, выбери пункт меню"

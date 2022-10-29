@@ -27,17 +27,12 @@ func NewStorageUsecase(storage storage.Storage, bot *tg.BotAPI) StorageUsecase {
 func (e *storageUsecase) CommandHandle(update *tg.Update) {
 	cmd := update.Message.Command()
 
-	if cmd == "start" {
+	switch cmd {
+	case StartCmd:
 		e.MakeResponse(update, HelloMsg)
-	}
-
-	if cmd == "menu" {
-		msg := tg.NewMessage(update.Message.Chat.ID, MainMenu)
-		msg.ReplyMarkup = MainMenuButtons
-		defer func() { _, _ = e.bot.Send(msg) }()
-	}
-
-	if cmd == "all" {
+	case MenuCmd:
+		e.MakeMarkupResponse(update, MainMenu, "", MainMenuButtons)
+	case AllCmd:
 		e.getAllEvents(update)
 	}
 }
