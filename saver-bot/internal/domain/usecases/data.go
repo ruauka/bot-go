@@ -6,6 +6,9 @@ import (
 	tg "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )
 
+const DateLayout = "02.01.2006 15:04"
+const TimeLayout = "2006-01-02 15:04"
+
 const (
 	StateDate = iota
 	StateTime
@@ -27,6 +30,8 @@ const (
 	DBProblem         = "Проблема с БД ❌"
 	WrongDateFormat   = "Некорректный формат даты ❌🗓"
 	WrongTimeFormat   = "Некорректный формат времени ❌🕔"
+	DateBeforeNow     = "Этот день уже прошел ❌"
+	TimeBeforeNow     = "Это время уже прошло ❌"
 	EmptyManic        = "Пока нет записей на маникюр 🤷‍♀"
 	EmptyMassage      = "Пока нет записей на массаж 🤷‍♀"
 	EmptySport        = "Пока нет записей на спорт 🤷‍♀"

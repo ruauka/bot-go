@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"regexp"
+	"time"
 
 	tg "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 
@@ -67,11 +68,19 @@ func (e *storageUsecase) ChatStateHandle(update *tg.Update, state *State) {
 			break
 		}
 
+		if !e.dateCheck(update, SignDate) {
+			break
+		}
+
 		state.Date = update.Message.Text
 		e.makeMarkupResponse(update, SignTime, "", CancelButton)
 		state.State = StateTime
 	default:
 		if !e.regExpCheck(timeRe, update, WrongTimeFormat, SignTime) {
+			break
+		}
+
+		if !e.timeCheck(update, SignTime) {
 			break
 		}
 
@@ -188,6 +197,30 @@ func (e *storageUsecase) getAllEvents(update *tg.Update) {
 	for _, v := range manics {
 		e.MakeResponse(update, fmt.Sprintf("🗓 Запись на %s", v.Date))
 	}
+}
+
+func (e *storageUsecase) dateCheck(update *tg.Update, correct string) bool {
+	currentDate, err := time.Parse(DateLayout, fmt.Sprintf("%s 23:59", update.Message.Text))
+	if currentDate.Before(time.Now()) || err != nil {
+		log.Printf("ошибка даты: %s", err)
+		e.MakeResponse(update, DateBeforeNow)
+		e.MakeResponse(update, correct)
+		return false
+	}
+
+	return true
+}
+
+func (e *storageUsecase) timeCheck(update *tg.Update, correct string) bool {
+	currentTime, err := time.Parse(TimeLayout, fmt.Sprintf("%s %s", time.Now().String()[:10], update.Message.Text))
+	if currentTime.Before(time.Now().UTC().Add(time.Hour*3)) || err != nil {
+		log.Printf("ошибка времени: %s", err)
+		e.MakeResponse(update, TimeBeforeNow)
+		e.MakeResponse(update, correct)
+		return false
+	}
+
+	return true
 }
 
 func (e *storageUsecase) regExpCheck(pattern *regexp.Regexp, update *tg.Update, incorrect, correct string) bool {
