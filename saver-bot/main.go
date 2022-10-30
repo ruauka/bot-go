@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"log"
 
-	"saver-bot/internal/adapters/queue"
+	q "saver-bot/internal/adapters/queue"
 	s "saver-bot/internal/adapters/storage"
 	tg "saver-bot/internal/adapters/telegram"
 	"saver-bot/internal/domain/usecases"
@@ -19,14 +19,14 @@ func main() {
 		log.Fatalf("failed to connect telegram: %s", err.Error())
 	}
 
-	conn, err := rabbitmq.NewRabbitMQConnect()
+	mq, err := rabbitmq.NewRabbitMQConnect()
 	if err != nil {
 		log.Fatal(fmt.Sprintf("failed to connect to RabbitMQ: %s", err.Error()))
 	}
 
-	defer func() { _ = conn.Close() }()
+	defer func() { _ = mq.Close() }()
 
-	mq := queue.NewQueue(bot, conn)
+	queue := q.NewQueue(bot, mq)
 
 	db, err := sqlite.NewSqliteConnect()
 	if err != nil {
@@ -35,7 +35,7 @@ func main() {
 
 	storage := s.NewStorage(db)
 
-	usecase := usecases.NewUsecases(storage, bot, mq)
+	usecase := usecases.NewUsecases(storage, bot, queue)
 
 	app := tg.NewApp(usecase)
 	app.Start(updates)

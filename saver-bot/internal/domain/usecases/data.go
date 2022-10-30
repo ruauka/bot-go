@@ -57,7 +57,8 @@ var (
 	SportState   = NewState()
 	MeetingState = NewState()
 
-	//Chats = []map[int64]*State{MassageState, ManicState, SportState, MeetingState}
+	Chats    = []map[int64]*State{MassageState, ManicState, SportState, MeetingState}
+	EventArr = [4]string{Massage, Manic, Sport, Meeting}
 
 	MainMenuButtons = tg.NewReplyKeyboard(
 		tg.NewKeyboardButtonRow(

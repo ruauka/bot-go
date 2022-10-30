@@ -19,28 +19,12 @@ func IsButton(text string) string {
 }
 
 func IsChatState(userID int64) *usecases.State {
-	manicState, ok := usecases.ManicState[userID]
-	if ok {
-		manicState.ChatName = usecases.Manic
-		return manicState
-	}
-
-	massageState, ok := usecases.MassageState[userID]
-	if ok {
-		massageState.ChatName = usecases.Massage
-		return massageState
-	}
-
-	sportState, ok := usecases.SportState[userID]
-	if ok {
-		sportState.ChatName = usecases.Sport
-		return sportState
-	}
-
-	meetingState, ok := usecases.MeetingState[userID]
-	if ok {
-		meetingState.ChatName = usecases.Meeting
-		return meetingState
+	for index, chat := range usecases.Chats {
+		state, ok := chat[userID]
+		if ok {
+			state.ChatName = usecases.EventArr[index]
+			return state
+		}
 	}
 
 	return nil
