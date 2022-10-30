@@ -20,7 +20,7 @@ func NewStorage(db *sqlx.DB) Storage {
 }
 
 func (e *storage) Save(ctx context.Context, event *entities.Event) error {
-	query := `INSERT INTO event (date, type, username, telega_id) VALUES (?, ?, ?, ?)`
+	query := `INSERT INTO event (date, type, username, telega_id) VALUES ($1, $2, $3, $4)`
 
 	if _, err := e.db.ExecContext(ctx, query, event.Date, event.Type, event.Username, event.TelegaID); err != nil {
 		return fmt.Errorf("can't save event: %w", err)

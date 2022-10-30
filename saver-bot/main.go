@@ -8,8 +8,8 @@ import (
 	s "saver-bot/internal/adapters/storage"
 	tg "saver-bot/internal/adapters/telegram"
 	"saver-bot/internal/domain/usecases"
+	"saver-bot/pkg/client/postgres"
 	"saver-bot/pkg/client/rabbitmq"
-	"saver-bot/pkg/client/sqlite"
 	"saver-bot/pkg/client/telegram"
 )
 
@@ -28,7 +28,8 @@ func main() {
 
 	queue := q.NewQueue(bot, mq)
 
-	db, err := sqlite.NewSqliteConnect()
+	//db, err := sqlite.NewSqliteConnect()
+	db, err := postgres.NewPostgresConnect()
 	if err != nil {
 		log.Fatal(fmt.Sprintf("failed to init db: %s", err.Error()))
 	}

@@ -105,6 +105,7 @@ func (e *storageUsecase) ChatStateHandle(update *tg.Update, state *State) {
 
 		err := e.storage.Save(context.Background(), &payload)
 		if err != nil {
+			log.Println(err)
 			e.MakeResponse(update, DBProblem)
 		}
 
