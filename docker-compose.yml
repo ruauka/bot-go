@@ -31,7 +31,7 @@ services:
       - db:/var/lib/postgresql/data
 
   queue:
-    image: rabbitmq:3.10-management
+    image: rabbitmq:latest
     container_name: queue
     ports:
       - "5672:5672"    #amqp
