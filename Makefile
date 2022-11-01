@@ -13,3 +13,8 @@ database:
  			-e POSTGRES_DB=crud \
  			-v db:/var/lib/postgresql/data \
  			-d postgres:latest
+dockerup:
+	docker-compose up -d --build
+
+dockerstop:
+	docker-compose stop
