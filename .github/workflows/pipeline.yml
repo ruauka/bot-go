@@ -26,7 +26,7 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           context: ./saver-bot
-          file: saver-bot.Dockerfile
+          file: ./saver-bot.Dockerfile
           push: true
           tags: ${{ secrets.DOCKER_HUB_USERNAME }}/bot:latest
 
@@ -34,7 +34,7 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           context: ./scheduler
-          file: scheduler.Dockerfile
+          file: ./scheduler.Dockerfile
           push: true
           tags: ${{ secrets.DOCKER_HUB_USERNAME }}/schedule:latest
 
