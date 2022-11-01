@@ -30,7 +30,7 @@ jobs:
             cd ..
             
             #remove dir
-            re -r bot-go
+            rm -r bot-go
             
             #remove all images
             docker rmi -f $(docker images -a -q)
