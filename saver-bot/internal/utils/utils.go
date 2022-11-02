@@ -15,6 +15,14 @@ func IsButton(text string) string {
 		}
 	}
 
+	for _, buttonSlice := range usecases.MashaMenuButtons.Keyboard {
+		for _, buttonName := range buttonSlice {
+			if buttonName.Text == text {
+				return buttonName.Text
+			}
+		}
+	}
+
 	return ""
 }
 

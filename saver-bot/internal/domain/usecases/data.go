@@ -6,8 +6,9 @@ import (
 	tg "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )
 
-const DateLayout = "02.01.2006 15:04"
-const TimeLayout = "2006-01-02 15:04"
+const DatePointLayout = "02.01.2006"
+const DatePointTimeLayout = "02.01.2006 15:04"
+const TimeDashTimeLayout = "2006-01-02 15:04"
 
 const (
 	StateDate = iota
@@ -17,7 +18,6 @@ const (
 const (
 	StartCmd          = "start"
 	MenuCmd           = "menu"
-	AllCmd            = "all"
 	Massage           = "Массаж"
 	Manic             = "Маникюр"
 	Sport             = "Спорт"
@@ -37,6 +37,7 @@ const (
 	EmptySport        = "Пока нет записей на спорт 🤷‍♀"
 	EmptyMeeting      = "Пока нет встреч 🤷‍♀"
 	OtherMessagesPlug = "Ой, давай не сейчас..."
+	MashaMenu         = "Чем займемся?"
 )
 
 type State struct {
@@ -62,16 +63,26 @@ var (
 
 	MainMenuButtons = tg.NewReplyKeyboard(
 		tg.NewKeyboardButtonRow(
-			tg.NewKeyboardButton("💆‍♀ Массаж"),
+			tg.NewKeyboardButton("Саша"),
 		),
 		tg.NewKeyboardButtonRow(
+			tg.NewKeyboardButton("Маша"),
+		),
+		// погода
+		// курсы валют
+	)
+
+	MashaMenuButtons = tg.NewReplyKeyboard(
+		tg.NewKeyboardButtonRow(
+			tg.NewKeyboardButton("💆‍♀ Массаж"),
 			tg.NewKeyboardButton("💅 Маникюр"),
 		),
 		tg.NewKeyboardButtonRow(
 			tg.NewKeyboardButton("🏃‍♀ Спорт"),
+			tg.NewKeyboardButton("🗓 Встреча"),
 		),
 		tg.NewKeyboardButtonRow(
-			tg.NewKeyboardButton("🗓 Встреча"),
+			tg.NewKeyboardButton("Все мои записи"),
 		),
 	)
 
