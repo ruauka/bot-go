@@ -18,7 +18,7 @@ type EventQueue struct {
 	storage storage.Storage
 }
 
-func NewEventQueue(conn *amqp.Connection, storage storage.Storage) *EventQueue {
+func NewApp(conn *amqp.Connection, storage storage.Storage) *EventQueue {
 	ch, err := conn.Channel()
 	if err != nil {
 		log.Fatalf("Failed to open a channel: %s", err)

@@ -33,28 +33,36 @@ func (e *storageUsecase) CommandHandle(update *tg.Update) {
 		e.MakeResponse(update, HelloMsg)
 	case MenuCmd:
 		e.makeMarkupResponse(update, MainMenu, "", MainMenuButtons)
-	case AllCmd:
-		e.getAllEvents(update)
+		e.deleteChatState(update)
 	}
 }
 
 func (e *storageUsecase) ButtonsHandle(update *tg.Update, button string) {
 	switch button {
+	// cancel
 	case CancelButton.Keyboard[0][0].Text:
-		delete(ManicState, update.Message.From.ID)
-		delete(MassageState, update.Message.From.ID)
-		delete(SportState, update.Message.From.ID)
-		delete(MeetingState, update.Message.From.ID)
-		e.makeMarkupResponse(update, MainMenu, "", MainMenuButtons)
+		e.deleteChatState(update)
+		e.makeMarkupResponse(update, MainMenu, "", MashaMenuButtons)
 		return
+	// Main menu
 	case MainMenuButtons.Keyboard[0][0].Text:
-		e.createStateChat(update, MassageState)
+		e.MakeResponse(update, "пока пусто")
+		return
 	case MainMenuButtons.Keyboard[1][0].Text:
+		e.makeMarkupResponse(update, MashaMenu, "", MashaMenuButtons)
+		return
+	// Masha menu
+	case MashaMenuButtons.Keyboard[0][0].Text:
+		e.createStateChat(update, MassageState)
+	case MashaMenuButtons.Keyboard[0][1].Text:
 		e.createStateChat(update, ManicState)
-	case MainMenuButtons.Keyboard[2][0].Text:
+	case MashaMenuButtons.Keyboard[1][0].Text:
 		e.createStateChat(update, SportState)
-	case MainMenuButtons.Keyboard[3][0].Text:
+	case MashaMenuButtons.Keyboard[1][1].Text:
 		e.createStateChat(update, MeetingState)
+	case MashaMenuButtons.Keyboard[2][0].Text:
+		e.getAllEvents(update)
+		return
 	}
 
 	e.makeMarkupResponse(update, SignDate, "", CancelButton)
@@ -80,7 +88,7 @@ func (e *storageUsecase) ChatStateHandle(update *tg.Update, state *State) {
 			break
 		}
 
-		if !e.timeCheck(update, SignTime) {
+		if !e.timeCheck(update, state, SignTime) {
 			break
 		}
 
@@ -109,7 +117,7 @@ func (e *storageUsecase) ChatStateHandle(update *tg.Update, state *State) {
 			e.MakeResponse(update, DBProblem)
 		}
 
-		e.makeMarkupResponse(update, MainMenu, SaveUpdate, MainMenuButtons)
+		e.makeMarkupResponse(update, MainMenu, SaveUpdate, MashaMenuButtons)
 	}
 }
 
@@ -195,13 +203,13 @@ func (e *storageUsecase) getAllEvents(update *tg.Update) {
 	for _, v := range sports {
 		e.MakeResponse(update, fmt.Sprintf("🏃‍♀ Запись на %s", v.Date))
 	}
-	for _, v := range manics {
+	for _, v := range meetings {
 		e.MakeResponse(update, fmt.Sprintf("🗓 Запись на %s", v.Date))
 	}
 }
 
 func (e *storageUsecase) dateCheck(update *tg.Update, correct string) bool {
-	currentDate, err := time.Parse(DateLayout, fmt.Sprintf("%s 23:59", update.Message.Text))
+	currentDate, err := time.Parse(DatePointTimeLayout, fmt.Sprintf("%s 23:59", update.Message.Text))
 	if currentDate.Before(time.Now()) || err != nil {
 		log.Printf("ошибка даты: %s", err)
 		e.MakeResponse(update, DateBeforeNow)
@@ -212,8 +220,13 @@ func (e *storageUsecase) dateCheck(update *tg.Update, correct string) bool {
 	return true
 }
 
-func (e *storageUsecase) timeCheck(update *tg.Update, correct string) bool {
-	currentTime, err := time.Parse(TimeLayout, fmt.Sprintf("%s %s", time.Now().String()[:10], update.Message.Text))
+func (e *storageUsecase) timeCheck(update *tg.Update, state *State, correct string) bool {
+	currentTime, err := time.Parse(DatePointLayout, state.Date)
+	if currentTime.After(time.Now()) {
+		return true
+	}
+
+	currentTime, err = time.Parse(TimeDashTimeLayout, fmt.Sprintf("%s %s", time.Now().String()[:10], update.Message.Text))
 	if currentTime.Before(time.Now().UTC().Add(time.Hour*3)) || err != nil {
 		log.Printf("ошибка времени: %s", err)
 		e.MakeResponse(update, TimeBeforeNow)
@@ -222,6 +235,11 @@ func (e *storageUsecase) timeCheck(update *tg.Update, correct string) bool {
 	}
 
 	return true
+}
+
+func (e *storageUsecase) dateParse(date string) time.Time {
+	currentDate, _ := time.Parse(DatePointLayout, date)
+	return currentDate
 }
 
 func (e *storageUsecase) regExpCheck(pattern *regexp.Regexp, update *tg.Update, incorrect, correct string) bool {
@@ -241,4 +259,11 @@ func (e *storageUsecase) concat(update *tg.Update, stateMap map[int64]*State) st
 		stateMap[update.Message.From.ID].Date,
 		stateMap[update.Message.From.ID].Time,
 	)
+}
+
+func (e *storageUsecase) deleteChatState(update *tg.Update) {
+	delete(ManicState, update.Message.From.ID)
+	delete(MassageState, update.Message.From.ID)
+	delete(SportState, update.Message.From.ID)
+	delete(MeetingState, update.Message.From.ID)
 }

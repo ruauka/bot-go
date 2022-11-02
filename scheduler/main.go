@@ -24,6 +24,6 @@ func main() {
 	}
 	defer func() { _ = queueConn.Close() }()
 
-	queue := q.NewEventQueue(queueConn, storage)
-	queue.Start()
+	app := q.NewApp(queueConn, storage)
+	app.Start()
 }
