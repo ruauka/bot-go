@@ -38,9 +38,11 @@ func (a *App) Start(updates tg.UpdatesChannel) {
 			continue
 		}
 
-		if chatState := utils.IsChatState(update.Message.From.ID); chatState != nil {
-			a.usecase.Storage.ChatStateHandle(&update, chatState)
-			continue
+		if chatState := a.usecase.Storage.IsChatState(update.Message.From.ID); chatState != nil {
+			if chatState.State != usecases.StateQuestion {
+				a.usecase.Storage.ChatStateHandle(&update, chatState)
+				continue
+			}
 		}
 
 		fmt.Println(update.Message.From.UserName, update.Message.Text)

@@ -12,6 +12,7 @@ type StorageUsecase interface {
 	ButtonsHandle(update *tg.Update, button string)
 	ChatStateHandle(update *tg.Update, state *State)
 	MakeResponse(update *tg.Update, text string)
+	IsChatState(userID int64) *State
 }
 
 type QueueUsecase interface {

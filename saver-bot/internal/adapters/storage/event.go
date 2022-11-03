@@ -39,3 +39,19 @@ func (e *storage) GetAll(ctx context.Context) ([]entities.Event, error) {
 
 	return events, nil
 }
+
+func (e *storage) Remove(ctx context.Context, date, button, username string) error {
+	var ev entities.Event
+
+	query := `SELECT * FROM event WHERE date=$1 AND type=$2 AND username=$3`
+	if err := e.db.GetContext(ctx, &ev, query, date, button, username); err != nil {
+		return fmt.Errorf("can't find event: %w", err)
+	}
+
+	query = `DELETE FROM event WHERE date=$1 AND type=$2 AND username=$3`
+	if _, err := e.db.ExecContext(ctx, query, date, button, username); err != nil {
+		return fmt.Errorf("can't find event: %w", err)
+	}
+
+	return nil
+}

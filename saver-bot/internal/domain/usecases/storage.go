@@ -54,22 +54,51 @@ func (e *storageUsecase) ButtonsHandle(update *tg.Update, button string) {
 	// Masha menu
 	case MashaMenuButtons.Keyboard[0][0].Text:
 		e.createStateChat(update, MassageState)
+		e.makeMarkupResponse(update, MassageQuestion, "", OrderButtons)
+		return
 	case MashaMenuButtons.Keyboard[0][1].Text:
 		e.createStateChat(update, ManicState)
+		e.makeMarkupResponse(update, ManicQuestion, "", OrderButtons)
+		return
 	case MashaMenuButtons.Keyboard[1][0].Text:
 		e.createStateChat(update, SportState)
+		e.makeMarkupResponse(update, SportQuestion, "", OrderButtons)
+		return
 	case MashaMenuButtons.Keyboard[1][1].Text:
 		e.createStateChat(update, MeetingState)
+		e.makeMarkupResponse(update, MeetingQuestion, "", OrderButtons)
+		return
+	// Order menu
+	case OrderButtons.Keyboard[0][0].Text:
+		e.changeState(update, StateDate)
+		e.makeMarkupResponse(update, SignDate, "", CancelButton)
+	case OrderButtons.Keyboard[1][0].Text:
+		e.setDeleteModeState(update)
+		e.makeMarkupResponse(update, DeleteEvent, "", CancelButton)
+	case OrderButtons.Keyboard[2][0].Text:
+		e.deleteChatState(update)
+		e.makeMarkupResponse(update, MashaMenu, "", MashaMenuButtons)
+		return
+	// all events
 	case MashaMenuButtons.Keyboard[2][0].Text:
 		e.getAllEvents(update)
 		return
 	}
 
-	e.makeMarkupResponse(update, SignDate, "", CancelButton)
+	//e.makeMarkupResponse(update, SignDate, "", CancelButton)
 	log.Printf("[%s] %s", update.Message.From.UserName, update.Message.Text)
 }
 
 func (e *storageUsecase) ChatStateHandle(update *tg.Update, state *State) {
+	if state.DeleteMode {
+		if !e.tryToRemoveEvent(update, state) {
+			return
+		}
+		e.makeMarkupResponse(update, MainMenu, DeleteUpdate, MashaMenuButtons)
+		e.deleteChatState(update)
+		return
+	}
+
 	switch state.State {
 	case StateDate:
 		if !e.regExpCheck(dateRe, update, WrongDateFormat, SignDate) {
@@ -121,6 +150,30 @@ func (e *storageUsecase) ChatStateHandle(update *tg.Update, state *State) {
 	}
 }
 
+func (e *storageUsecase) setDeleteModeState(update *tg.Update) {
+	chatState := e.IsChatState(update.Message.From.ID)
+	chatState.DeleteMode = true
+	chatState.ChatName = update.Message.Text
+	chatState.State = StateDate
+}
+
+func (e *storageUsecase) changeState(update *tg.Update, state int) {
+	chatState := e.IsChatState(update.Message.From.ID)
+	chatState.State = state
+}
+
+func (e *storageUsecase) IsChatState(userID int64) *State {
+	for index, chat := range Chats {
+		state, ok := chat[userID]
+		if ok {
+			state.ChatName = EventArr[index]
+			return state
+		}
+	}
+
+	return nil
+}
+
 func (e *storageUsecase) MakeResponse(update *tg.Update, text string) {
 	msg := tg.NewMessage(update.Message.Chat.ID, text)
 	defer func() { _, _ = e.bot.Send(msg) }()
@@ -128,7 +181,7 @@ func (e *storageUsecase) MakeResponse(update *tg.Update, text string) {
 
 func (e *storageUsecase) createStateChat(update *tg.Update, state map[int64]*State) {
 	state[update.Message.From.ID] = new(State)
-	state[update.Message.From.ID].State = StateDate
+	state[update.Message.From.ID].State = StateQuestion
 }
 
 func (e *storageUsecase) makeMarkupResponse(update *tg.Update, text, additionText string, reply tg.ReplyKeyboardMarkup) {
@@ -240,6 +293,17 @@ func (e *storageUsecase) timeCheck(update *tg.Update, state *State, correct stri
 func (e *storageUsecase) dateParse(date string) time.Time {
 	currentDate, _ := time.Parse(DatePointLayout, date)
 	return currentDate
+}
+
+func (e *storageUsecase) tryToRemoveEvent(update *tg.Update, state *State) bool {
+	err := e.storage.Remove(context.Background(), update.Message.Text, state.ChatName, update.Message.From.UserName)
+	if err != nil {
+		e.MakeResponse(update, EventNotFound)
+		e.MakeResponse(update, DeleteEvent)
+		return false
+	}
+
+	return true
 }
 
 func (e *storageUsecase) regExpCheck(pattern *regexp.Regexp, update *tg.Update, incorrect, correct string) bool {

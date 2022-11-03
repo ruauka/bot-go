@@ -11,7 +11,8 @@ const DatePointTimeLayout = "02.01.2006 15:04"
 const TimeDashTimeLayout = "2006-01-02 15:04"
 
 const (
-	StateDate = iota
+	StateQuestion = iota
+	StateDate
 	StateTime
 )
 
@@ -26,7 +27,9 @@ const (
 	MainMenu          = "Главное меню"
 	SignDate          = "Шаг [1/2]\n\nУкажи дату. Формат: dd.mm.yyyy 🗓"
 	SignTime          = "Шаг [2/2]\n\nУкажи время. Формат: hh:mm 🕔"
+	DeleteEvent       = "Укажи дату и время записи.\nФормат: dd.mm.yyyy hh:mm 🗓"
 	SaveUpdate        = "Cохранил. Напомню тебе 👌"
+	DeleteUpdate      = "Отменил 👌"
 	DBProblem         = "Проблема с БД ❌"
 	WrongDateFormat   = "Некорректный формат даты ❌🗓"
 	WrongTimeFormat   = "Некорректный формат времени ❌🕔"
@@ -38,13 +41,19 @@ const (
 	EmptyMeeting      = "Пока нет встреч 🤷‍♀"
 	OtherMessagesPlug = "Ой, давай не сейчас..."
 	MashaMenu         = "Чем займемся?"
+	MassageQuestion   = "Что делаем с массажем?"
+	ManicQuestion     = "Что делаем с маникюром?"
+	SportQuestion     = "Что делаем со спортом?"
+	MeetingQuestion   = "Что делаем со встречей?"
+	EventNotFound     = "Не нашел такого 🤷‍♀"
 )
 
 type State struct {
-	ChatName string
-	State    int // 0 - date, 1 - time
-	Date     string
-	Time     string
+	State      int // 0 - question, 1 - date, 2 - time
+	ChatName   string
+	DeleteMode bool
+	Date       string
+	Time       string
 }
 
 var (
@@ -83,6 +92,18 @@ var (
 		),
 		tg.NewKeyboardButtonRow(
 			tg.NewKeyboardButton("Все мои записи"),
+		),
+	)
+
+	OrderButtons = tg.NewReplyKeyboard(
+		tg.NewKeyboardButtonRow(
+			tg.NewKeyboardButton("🙋‍♀ Создать"),
+		),
+		tg.NewKeyboardButtonRow(
+			tg.NewKeyboardButton("🙅‍♀ Отменить"),
+		),
+		tg.NewKeyboardButtonRow(
+			tg.NewKeyboardButton("Назад"),
 		),
 	)
 

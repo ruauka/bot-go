@@ -23,17 +23,11 @@ func IsButton(text string) string {
 		}
 	}
 
-	return ""
-}
-
-func IsChatState(userID int64) *usecases.State {
-	for index, chat := range usecases.Chats {
-		state, ok := chat[userID]
-		if ok {
-			state.ChatName = usecases.EventArr[index]
-			return state
+	for _, buttonName := range usecases.OrderButtons.Keyboard {
+		if buttonName[0].Text == text {
+			return buttonName[0].Text
 		}
 	}
 
-	return nil
+	return ""
 }
