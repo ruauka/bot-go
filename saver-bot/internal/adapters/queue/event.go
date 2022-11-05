@@ -95,27 +95,71 @@ func (mq *queue) QueueChanListen() {
 
 func eventCheck(event entities.Event) tg.MessageConfig {
 	if event.Type == Manic {
-		return tg.NewMessage(event.TelegaID,
-			fmt.Sprintf("Напоминаю. У тебя сегодня %s в %s 💅", ManicSmall, event.Date[11:]),
-		)
+		switch event.ReminderStatus {
+		case 0:
+			return tg.NewMessage(event.TelegaID,
+				fmt.Sprintf("Доброе утро. У тебя сегодня %s в %s 💅", ManicSmall, event.Date[11:]),
+			)
+		case 1:
+			return tg.NewMessage(event.TelegaID,
+				fmt.Sprintf("Добрый вечер. У тебя завтра %s в %s 💅", ManicSmall, event.Date[11:]),
+			)
+		case 2:
+			return tg.NewMessage(event.TelegaID,
+				fmt.Sprintf("Напоминаю. У тебя через час %s в %s 💅", ManicSmall, event.Date[11:]),
+			)
+		}
 	}
 
 	if event.Type == Massage {
-		return tg.NewMessage(event.TelegaID,
-			fmt.Sprintf("Напоминаю. У тебя сегодня %s в %s 💆‍♀", MassageSmall, event.Date[11:]),
-		)
+		switch event.ReminderStatus {
+		case 0:
+			return tg.NewMessage(event.TelegaID,
+				fmt.Sprintf("Доброе утро. У тебя сегодня %s в %s 💆‍♀", MassageSmall, event.Date[11:]),
+			)
+		case 1:
+			return tg.NewMessage(event.TelegaID,
+				fmt.Sprintf("Добрый вечер. У тебя завтра %s в %s 💆‍♀", MassageSmall, event.Date[11:]),
+			)
+		case 2:
+			return tg.NewMessage(event.TelegaID,
+				fmt.Sprintf("Напоминаю. У тебя через час %s в %s 💆‍♀", MassageSmall, event.Date[11:]),
+			)
+		}
 	}
 
 	if event.Type == Sport {
-		return tg.NewMessage(event.TelegaID,
-			fmt.Sprintf("Напоминаю. У тебя сегодня %s в %s 🏃‍♀", SportSmall, event.Date[11:]),
-		)
+		switch event.ReminderStatus {
+		case 0:
+			return tg.NewMessage(event.TelegaID,
+				fmt.Sprintf("Доброе утро. У тебя сегодня %s в %s 🏃‍♀", SportSmall, event.Date[11:]),
+			)
+		case 1:
+			return tg.NewMessage(event.TelegaID,
+				fmt.Sprintf("Добрый вечер. У тебя завтра %s в %s 🏃‍♀", SportSmall, event.Date[11:]),
+			)
+		case 2:
+			return tg.NewMessage(event.TelegaID,
+				fmt.Sprintf("Напоминаю. У тебя через час %s в %s 🏃‍♀", SportSmall, event.Date[11:]),
+			)
+		}
 	}
 
 	if event.Type == Meeting {
-		return tg.NewMessage(event.TelegaID,
-			fmt.Sprintf("Напоминаю. У тебя сегодня %s в %s 🗓", MeetingSmall, event.Date[11:]),
-		)
+		switch event.ReminderStatus {
+		case 0:
+			return tg.NewMessage(event.TelegaID,
+				fmt.Sprintf("Доброе утро. У тебя сегодня %s в %s 🗓", MeetingSmall, event.Date[11:]),
+			)
+		case 1:
+			return tg.NewMessage(event.TelegaID,
+				fmt.Sprintf("Добрый вечер. У тебя завтра %s в %s 🗓", MeetingSmall, event.Date[11:]),
+			)
+		case 2:
+			return tg.NewMessage(event.TelegaID,
+				fmt.Sprintf("Напоминаю. У тебя через час %s в %s 🗓", MeetingSmall, event.Date[11:]),
+			)
+		}
 	}
 
 	return tg.MessageConfig{}

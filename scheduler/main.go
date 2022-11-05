@@ -18,12 +18,12 @@ func main() {
 
 	storage := s.NewEventStorage(db)
 
-	queueConn, err := rabbitmq.NewRabbitMQConnect()
+	mq, err := rabbitmq.NewRabbitMQConnect()
 	if err != nil {
 		log.Fatal(fmt.Sprintf("failed to connect to RabbitMQ: %s", err.Error()))
 	}
-	defer func() { _ = queueConn.Close() }()
+	defer func() { _ = mq.Close() }()
 
-	app := q.NewApp(queueConn, storage)
+	app := q.NewApp(mq, storage)
 	app.Start()
 }
