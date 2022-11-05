@@ -43,49 +43,48 @@ func (e *storageUsecase) ButtonsHandle(update *tg.Update, button string) {
 	case CancelButton.Keyboard[0][0].Text:
 		e.deleteChatState(update)
 		e.makeMarkupResponse(update, MainMenu, "", MashaMenuButtons)
-		return
 	// Main menu
 	case MainMenuButtons.Keyboard[0][0].Text:
+		// Саша
 		e.MakeResponse(update, "пока пусто")
-		return
+		// Маша
 	case MainMenuButtons.Keyboard[1][0].Text:
 		e.makeMarkupResponse(update, MashaMenu, "", MashaMenuButtons)
-		return
 	// Masha menu
+	// Массаж
 	case MashaMenuButtons.Keyboard[0][0].Text:
 		e.createStateChat(update, MassageState)
 		e.makeMarkupResponse(update, MassageQuestion, "", OrderButtons)
-		return
+	// Маникюр
 	case MashaMenuButtons.Keyboard[0][1].Text:
 		e.createStateChat(update, ManicState)
 		e.makeMarkupResponse(update, ManicQuestion, "", OrderButtons)
-		return
+	// Спорт
 	case MashaMenuButtons.Keyboard[1][0].Text:
 		e.createStateChat(update, SportState)
 		e.makeMarkupResponse(update, SportQuestion, "", OrderButtons)
-		return
+	// Встреча
 	case MashaMenuButtons.Keyboard[1][1].Text:
 		e.createStateChat(update, MeetingState)
 		e.makeMarkupResponse(update, MeetingQuestion, "", OrderButtons)
-		return
 	// Order menu
+	// Создать
 	case OrderButtons.Keyboard[0][0].Text:
 		e.changeState(update, StateDate)
 		e.makeMarkupResponse(update, SignDate, "", CancelButton)
+	// Отменить
 	case OrderButtons.Keyboard[1][0].Text:
 		e.setDeleteModeState(update)
 		e.makeMarkupResponse(update, DeleteEvent, "", CancelButton)
+	// Назад
 	case OrderButtons.Keyboard[2][0].Text:
 		e.deleteChatState(update)
 		e.makeMarkupResponse(update, MashaMenu, "", MashaMenuButtons)
-		return
 	// all events
 	case MashaMenuButtons.Keyboard[2][0].Text:
 		e.getAllEvents(update)
-		return
 	}
 
-	//e.makeMarkupResponse(update, SignDate, "", CancelButton)
 	log.Printf("[%s] %s", update.Message.From.UserName, update.Message.Text)
 }
 
@@ -150,18 +149,6 @@ func (e *storageUsecase) ChatStateHandle(update *tg.Update, state *State) {
 	}
 }
 
-func (e *storageUsecase) setDeleteModeState(update *tg.Update) {
-	chatState := e.IsChatState(update.Message.From.ID)
-	chatState.DeleteMode = true
-	chatState.ChatName = update.Message.Text
-	chatState.State = StateDate
-}
-
-func (e *storageUsecase) changeState(update *tg.Update, state int) {
-	chatState := e.IsChatState(update.Message.From.ID)
-	chatState.State = state
-}
-
 func (e *storageUsecase) IsChatState(userID int64) *State {
 	for index, chat := range Chats {
 		state, ok := chat[userID]
@@ -177,6 +164,18 @@ func (e *storageUsecase) IsChatState(userID int64) *State {
 func (e *storageUsecase) MakeResponse(update *tg.Update, text string) {
 	msg := tg.NewMessage(update.Message.Chat.ID, text)
 	defer func() { _, _ = e.bot.Send(msg) }()
+}
+
+func (e *storageUsecase) setDeleteModeState(update *tg.Update) {
+	chatState := e.IsChatState(update.Message.From.ID)
+	chatState.DeleteMode = true
+	chatState.ChatName = update.Message.Text
+	chatState.State = StateDate
+}
+
+func (e *storageUsecase) changeState(update *tg.Update, state int) {
+	chatState := e.IsChatState(update.Message.From.ID)
+	chatState.State = state
 }
 
 func (e *storageUsecase) createStateChat(update *tg.Update, state map[int64]*State) {
@@ -199,65 +198,6 @@ func (e *storageUsecase) makePayload(update *tg.Update, chatName string, state m
 		Type:     chatName,
 		Username: update.Message.From.UserName,
 		TelegaID: update.Message.From.ID,
-	}
-}
-
-func (e *storageUsecase) getAllEvents(update *tg.Update) {
-	events, err := e.storage.GetAll(context.Background())
-	if err != nil {
-		log.Println(err)
-	}
-
-	var manics []entities.EventAll
-	var massages []entities.EventAll
-	var sports []entities.EventAll
-	var meetings []entities.EventAll
-
-	for _, event := range events {
-		e := entities.EventAll{}
-
-		if event.Type == Manic {
-			e.Date = event.Date
-			manics = append(manics, e)
-		}
-		if event.Type == Massage {
-			e.Date = event.Date
-			massages = append(massages, e)
-		}
-		if event.Type == Sport {
-			e.Date = event.Date
-			sports = append(sports, e)
-		}
-		if event.Type == Meeting {
-			e.Date = event.Date
-			meetings = append(meetings, e)
-		}
-	}
-
-	if len(manics) == 0 {
-		e.MakeResponse(update, EmptyManic)
-	}
-	if len(massages) == 0 {
-		e.MakeResponse(update, EmptyMassage)
-	}
-	if len(sports) == 0 {
-		e.MakeResponse(update, EmptySport)
-	}
-	if len(meetings) == 0 {
-		e.MakeResponse(update, EmptyMeeting)
-	}
-
-	for _, v := range manics {
-		e.MakeResponse(update, fmt.Sprintf("💅 Запись на %s", v.Date))
-	}
-	for _, v := range massages {
-		e.MakeResponse(update, fmt.Sprintf("💆‍♀ Запись на %s", v.Date))
-	}
-	for _, v := range sports {
-		e.MakeResponse(update, fmt.Sprintf("🏃‍♀ Запись на %s", v.Date))
-	}
-	for _, v := range meetings {
-		e.MakeResponse(update, fmt.Sprintf("🗓 Запись на %s", v.Date))
 	}
 }
 
@@ -330,4 +270,63 @@ func (e *storageUsecase) deleteChatState(update *tg.Update) {
 	delete(MassageState, update.Message.From.ID)
 	delete(SportState, update.Message.From.ID)
 	delete(MeetingState, update.Message.From.ID)
+}
+
+func (e *storageUsecase) getAllEvents(update *tg.Update) {
+	events, err := e.storage.GetAll(context.Background())
+	if err != nil {
+		log.Println(err)
+	}
+
+	var manics []entities.EventAll
+	var massages []entities.EventAll
+	var sports []entities.EventAll
+	var meetings []entities.EventAll
+
+	for _, event := range events {
+		e := entities.EventAll{}
+
+		if event.Type == Manic {
+			e.Date = event.Date
+			manics = append(manics, e)
+		}
+		if event.Type == Massage {
+			e.Date = event.Date
+			massages = append(massages, e)
+		}
+		if event.Type == Sport {
+			e.Date = event.Date
+			sports = append(sports, e)
+		}
+		if event.Type == Meeting {
+			e.Date = event.Date
+			meetings = append(meetings, e)
+		}
+	}
+
+	if len(manics) == 0 {
+		e.MakeResponse(update, EmptyManic)
+	}
+	if len(massages) == 0 {
+		e.MakeResponse(update, EmptyMassage)
+	}
+	if len(sports) == 0 {
+		e.MakeResponse(update, EmptySport)
+	}
+	if len(meetings) == 0 {
+		e.MakeResponse(update, EmptyMeeting)
+	}
+
+	for _, v := range manics {
+		e.MakeResponse(update, fmt.Sprintf("💅 Запись на %s", v.Date))
+	}
+	for _, v := range massages {
+		e.MakeResponse(update, fmt.Sprintf("💆‍♀ Запись на %s", v.Date))
+	}
+	for _, v := range sports {
+		e.MakeResponse(update, fmt.Sprintf("🏃‍♀ Запись на %s", v.Date))
+	}
+	for _, v := range meetings {
+		e.MakeResponse(update, fmt.Sprintf("🗓 Запись на %s", v.Date))
+	}
 }
