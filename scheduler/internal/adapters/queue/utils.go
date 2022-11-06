@@ -41,7 +41,7 @@ func eveningCheck(date string) bool {
 	currentDate := convertDate(date)
 	if currentDate.Year() == time.Now().Year() &&
 		currentDate.Month() == time.Now().Month() &&
-		currentDate.Day() == time.Now().Day()-1 &&
+		currentDate.Day() == time.Now().Day()+1 &&
 		time.Now().Hour() == 21 && time.Now().Minute() == 30 &&
 		(time.Now().Second() == 0 ||
 			time.Now().Second() == 1 ||

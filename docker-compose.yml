@@ -38,8 +38,8 @@ services:
       - "15672:15672"  #http
     healthcheck:
       test: [ "CMD", "rabbitmqctl", "status" ]
-      interval: 5s
-      timeout: 20s
+      interval: 2s
+      timeout: 10s
       retries: 5
 
 volumes:
