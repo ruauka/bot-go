@@ -1,7 +1,7 @@
 package utils
 
 import (
-	"saver-bot/internal/domain/usecases"
+	"bot/internal/domain/usecases"
 )
 
 func IsButton(text string) string {
@@ -14,6 +14,12 @@ func IsButton(text string) string {
 			if buttonName.Text == text {
 				return buttonName.Text
 			}
+		}
+	}
+
+	for _, buttonName := range usecases.SashaMenuButtons.Keyboard {
+		if buttonName[0].Text == text {
+			return buttonName[0].Text
 		}
 	}
 

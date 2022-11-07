@@ -8,7 +8,7 @@ import (
 	tg "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	amqp "github.com/rabbitmq/amqp091-go"
 
-	"saver-bot/internal/domain/entities"
+	"bot/internal/domain/entities"
 )
 
 var (

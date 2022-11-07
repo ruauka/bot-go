@@ -6,7 +6,7 @@ import (
 
 	"github.com/jmoiron/sqlx"
 
-	"saver-bot/internal/domain/entities"
+	"bot/internal/domain/entities"
 )
 
 // userAuthStorage auth storage struct.

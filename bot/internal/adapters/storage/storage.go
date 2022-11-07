@@ -3,7 +3,7 @@ package storage
 import (
 	"context"
 
-	"saver-bot/internal/domain/entities"
+	"bot/internal/domain/entities"
 )
 
 type Storage interface {

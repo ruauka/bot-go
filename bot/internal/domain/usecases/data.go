@@ -41,6 +41,7 @@ const (
 	EmptyMeeting             = "Пока нет встреч 🤷‍♀"
 	OtherMessagesPlug        = "Ой, давай не сейчас..."
 	MashaMenu                = "Чем займемся?"
+	SashaMenu                = "Чего напомнить?"
 	MassageQuestion          = "Что делаем с массажем?"
 	ManicQuestion            = "Что делаем с маникюром?"
 	SportQuestion            = "Что делаем со спортом?"
@@ -107,13 +108,13 @@ var (
 
 	SashaMenuButtons = tg.NewReplyKeyboard(
 		tg.NewKeyboardButtonRow(
-			tg.NewKeyboardButton("🔨 Git"),
+			tg.NewKeyboardButton("🗜 Git"),
 		),
 		tg.NewKeyboardButtonRow(
-			tg.NewKeyboardButton("🔧 Docker"),
+			tg.NewKeyboardButton("🐳 Docker"),
 		),
 		tg.NewKeyboardButtonRow(
-			tg.NewKeyboardButton("⛏ Kuber"),
+			tg.NewKeyboardButton("🕸 Kuber"),
 		),
 		tg.NewKeyboardButtonRow(
 			tg.NewKeyboardButton("Назад"),
@@ -142,3 +143,29 @@ var (
 func NewState() map[int64]*State {
 	return make(map[int64]*State)
 }
+
+var (
+	Git = []string{
+		"rm -rf .git",
+		"git checkout -b new_branch",
+	}
+
+	Docker = []string{
+		"docker build --tag=go-server .",
+		"docker run -d --name my-go-server -p 8080:8000 go-server",
+		"docker container stop my-go-server",
+		"docker container rm my-go-server",
+		"docker container logs my-go-server",
+		"docker images",
+		"docker ps",
+		"docker volume ls",
+		"docker rmi -f $(docker images -a -q)",
+	}
+
+	Kuber = []string{
+		"minikube start",
+		"minikube status",
+		"minikube stop",
+		"minikube delete",
+	}
+)

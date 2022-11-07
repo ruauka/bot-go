@@ -3,8 +3,8 @@ package usecases
 import (
 	tg "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 
-	"saver-bot/internal/adapters/queue"
-	"saver-bot/internal/adapters/storage"
+	"bot/internal/adapters/queue"
+	"bot/internal/adapters/storage"
 )
 
 type StorageUsecase interface {
