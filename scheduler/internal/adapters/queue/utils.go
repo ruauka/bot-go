@@ -5,7 +5,10 @@ import (
 	"time"
 )
 
-var ReqBodyBytes = new(bytes.Buffer)
+var (
+	ReqBodyBytes = new(bytes.Buffer)
+	deduct       = 3
+)
 
 // Layout - шаблон формата даты для изменения типа string -> time.Time.
 const Layout = "02.01.2006 15:04"
@@ -25,7 +28,7 @@ func morningCheck(date string) bool {
 	if currentDate.Year() == time.Now().Year() &&
 		currentDate.Month() == time.Now().Month() &&
 		currentDate.Day() == time.Now().Day() &&
-		time.Now().Hour() == 7-3 && time.Now().Minute() == 40 &&
+		time.Now().Hour() == 7-deduct && time.Now().Minute() == 40 &&
 		(time.Now().Second() == 0 ||
 			time.Now().Second() == 1 ||
 			time.Now().Second() == 2 ||
@@ -42,7 +45,7 @@ func eveningCheck(date string) bool {
 	if currentDate.Year() == time.Now().Year() &&
 		currentDate.Month() == time.Now().Month() &&
 		currentDate.Day() == time.Now().Day()+1 &&
-		time.Now().UTC().Hour() == 22-3 && time.Now().Minute() == 30 &&
+		time.Now().Hour() == 22-deduct && time.Now().Minute() == 30 &&
 		(time.Now().Second() == 0 ||
 			time.Now().Second() == 1 ||
 			time.Now().Second() == 2 ||
