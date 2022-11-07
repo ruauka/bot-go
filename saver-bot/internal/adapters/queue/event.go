@@ -102,7 +102,7 @@ func eventCheck(event entities.Event) tg.MessageConfig {
 			)
 		case 1:
 			return tg.NewMessage(event.TelegaID,
-				fmt.Sprintf("Добрый вечер. У тебя завтра %s в %s 💅", ManicSmall, event.Date[11:]),
+				fmt.Sprintf("Напоминаю. У тебя завтра %s в %s 💅", ManicSmall, event.Date[11:]),
 			)
 		case 2:
 			return tg.NewMessage(event.TelegaID,
@@ -119,7 +119,7 @@ func eventCheck(event entities.Event) tg.MessageConfig {
 			)
 		case 1:
 			return tg.NewMessage(event.TelegaID,
-				fmt.Sprintf("Добрый вечер. У тебя завтра %s в %s 💆‍♀", MassageSmall, event.Date[11:]),
+				fmt.Sprintf("Напоминаю. У тебя завтра %s в %s 💆‍♀", MassageSmall, event.Date[11:]),
 			)
 		case 2:
 			return tg.NewMessage(event.TelegaID,
@@ -136,7 +136,7 @@ func eventCheck(event entities.Event) tg.MessageConfig {
 			)
 		case 1:
 			return tg.NewMessage(event.TelegaID,
-				fmt.Sprintf("Добрый вечер. У тебя завтра %s в %s 🏃‍♀", SportSmall, event.Date[11:]),
+				fmt.Sprintf("Напоминаю. У тебя завтра %s в %s 🏃‍♀", SportSmall, event.Date[11:]),
 			)
 		case 2:
 			return tg.NewMessage(event.TelegaID,
@@ -153,7 +153,7 @@ func eventCheck(event entities.Event) tg.MessageConfig {
 			)
 		case 1:
 			return tg.NewMessage(event.TelegaID,
-				fmt.Sprintf("Добрый вечер. У тебя завтра %s в %s 🗓", MeetingSmall, event.Date[11:]),
+				fmt.Sprintf("Напоминаю. У тебя завтра %s в %s 🗓", MeetingSmall, event.Date[11:]),
 			)
 		case 2:
 			return tg.NewMessage(event.TelegaID,

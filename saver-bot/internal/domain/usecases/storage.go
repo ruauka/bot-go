@@ -38,50 +38,82 @@ func (e *storageUsecase) CommandHandle(update *tg.Update) {
 }
 
 func (e *storageUsecase) ButtonsHandle(update *tg.Update, button string) {
-	switch button {
+	switch {
 	// cancel
-	case CancelButton.Keyboard[0][0].Text:
+	case CancelButton.Keyboard[0][0].Text == button:
 		e.deleteChatState(update)
-		e.makeMarkupResponse(update, MainMenu, "", MashaMenuButtons)
-	// Main menu
-	case MainMenuButtons.Keyboard[0][0].Text:
-		// Саша
-		e.MakeResponse(update, "пока пусто")
-		// Маша
-	case MainMenuButtons.Keyboard[1][0].Text:
+		e.changeBackButtonStatus(update, BackButtonMashaMenu)
 		e.makeMarkupResponse(update, MashaMenu, "", MashaMenuButtons)
+
+	// Main menu
+	case MainMenuButtons.Keyboard[0][0].Text == button:
+		// Саша
+		e.makeMarkupResponse(update, MashaMenu, "", SashaMenuButtons)
+		e.changeBackButtonStatus(update, BackButtonSashaMenu)
+		// Маша
+	case MainMenuButtons.Keyboard[1][0].Text == button:
+		e.changeBackButtonStatus(update, BackButtonMashaMenu)
+		e.makeMarkupResponse(update, MashaMenu, "", MashaMenuButtons)
+		// Погода
+	case MainMenuButtons.Keyboard[2][0].Text == button:
+		e.MakeResponse(update, "в разработке")
+		// Курсы валюты
+	case MainMenuButtons.Keyboard[2][1].Text == button:
+		e.MakeResponse(update, "в разработке")
+
+	// Sasha menu
+	// Git
+	// Docker
+	// Kuber
+
+	// Назад
+	case SashaMenuButtons.Keyboard[3][0].Text == button && BackButtonStatus[update.Message.From.ID] == BackButtonSashaMenu:
+		e.makeMarkupResponse(update, MainMenu, "", MainMenuButtons)
+
 	// Masha menu
 	// Массаж
-	case MashaMenuButtons.Keyboard[0][0].Text:
+	case MashaMenuButtons.Keyboard[0][0].Text == button:
 		e.createStateChat(update, MassageState)
+		e.changeBackButtonStatus(update, BackButtonMashaOrderMenu)
 		e.makeMarkupResponse(update, MassageQuestion, "", OrderButtons)
 	// Маникюр
-	case MashaMenuButtons.Keyboard[0][1].Text:
+	case MashaMenuButtons.Keyboard[0][1].Text == button:
 		e.createStateChat(update, ManicState)
+		e.changeBackButtonStatus(update, BackButtonMashaOrderMenu)
 		e.makeMarkupResponse(update, ManicQuestion, "", OrderButtons)
 	// Спорт
-	case MashaMenuButtons.Keyboard[1][0].Text:
+	case MashaMenuButtons.Keyboard[1][0].Text == button:
 		e.createStateChat(update, SportState)
+		e.changeBackButtonStatus(update, BackButtonMashaOrderMenu)
 		e.makeMarkupResponse(update, SportQuestion, "", OrderButtons)
 	// Встреча
-	case MashaMenuButtons.Keyboard[1][1].Text:
+	case MashaMenuButtons.Keyboard[1][1].Text == button:
 		e.createStateChat(update, MeetingState)
+		e.changeBackButtonStatus(update, BackButtonMashaOrderMenu)
 		e.makeMarkupResponse(update, MeetingQuestion, "", OrderButtons)
+	// Назад
+	case MashaMenuButtons.Keyboard[3][0].Text == button && BackButtonStatus[update.Message.From.ID] == BackButtonMashaMenu:
+		e.makeMarkupResponse(update, MainMenu, "", MainMenuButtons)
+
 	// Order menu
 	// Создать
-	case OrderButtons.Keyboard[0][0].Text:
+	case OrderButtons.Keyboard[0][0].Text == button:
 		e.changeState(update, StateDate)
+		e.changeBackButtonStatus(update, BackButtonMashaMenu)
 		e.makeMarkupResponse(update, SignDate, "", CancelButton)
 	// Отменить
-	case OrderButtons.Keyboard[1][0].Text:
+	case OrderButtons.Keyboard[1][0].Text == button:
 		e.setDeleteModeState(update)
+		e.changeBackButtonStatus(update, BackButtonMashaMenu)
 		e.makeMarkupResponse(update, DeleteEvent, "", CancelButton)
 	// Назад
-	case OrderButtons.Keyboard[2][0].Text:
+	case OrderButtons.Keyboard[2][0].Text == button && BackButtonStatus[update.Message.From.ID] == BackButtonMashaOrderMenu:
+		e.changeBackButtonStatus(update, BackButtonMashaMenu)
 		e.deleteChatState(update)
 		e.makeMarkupResponse(update, MashaMenu, "", MashaMenuButtons)
+
 	// all events
-	case MashaMenuButtons.Keyboard[2][0].Text:
+	case MashaMenuButtons.Keyboard[2][0].Text == button:
 		e.getAllEvents(update)
 	}
 
@@ -270,6 +302,10 @@ func (e *storageUsecase) deleteChatState(update *tg.Update) {
 	delete(MassageState, update.Message.From.ID)
 	delete(SportState, update.Message.From.ID)
 	delete(MeetingState, update.Message.From.ID)
+}
+
+func (e *storageUsecase) changeBackButtonStatus(update *tg.Update, status string) {
+	BackButtonStatus[update.Message.From.ID] = status
 }
 
 func (e *storageUsecase) getAllEvents(update *tg.Update) {
