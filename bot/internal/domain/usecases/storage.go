@@ -9,8 +9,8 @@ import (
 
 	tg "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 
-	"saver-bot/internal/adapters/storage"
-	"saver-bot/internal/domain/entities"
+	"bot/internal/adapters/storage"
+	"bot/internal/domain/entities"
 )
 
 type storageUsecase struct {
@@ -48,7 +48,7 @@ func (e *storageUsecase) ButtonsHandle(update *tg.Update, button string) {
 	// Main menu
 	case MainMenuButtons.Keyboard[0][0].Text == button:
 		// Саша
-		e.makeMarkupResponse(update, MashaMenu, "", SashaMenuButtons)
+		e.makeMarkupResponse(update, SashaMenu, "", SashaMenuButtons)
 		e.changeBackButtonStatus(update, BackButtonSashaMenu)
 		// Маша
 	case MainMenuButtons.Keyboard[1][0].Text == button:
@@ -63,10 +63,15 @@ func (e *storageUsecase) ButtonsHandle(update *tg.Update, button string) {
 
 	// Sasha menu
 	// Git
-	// Docker
-	// Kuber
-
-	// Назад
+	case SashaMenuButtons.Keyboard[0][0].Text == button:
+		e.makeSliceResponse(update, Git)
+		// Docker
+	case SashaMenuButtons.Keyboard[1][0].Text == button:
+		e.makeSliceResponse(update, Docker)
+		// Kuber
+	case SashaMenuButtons.Keyboard[2][0].Text == button:
+		e.makeSliceResponse(update, Kuber)
+		// Назад
 	case SashaMenuButtons.Keyboard[3][0].Text == button && BackButtonStatus[update.Message.From.ID] == BackButtonSashaMenu:
 		e.makeMarkupResponse(update, MainMenu, "", MainMenuButtons)
 
@@ -76,22 +81,22 @@ func (e *storageUsecase) ButtonsHandle(update *tg.Update, button string) {
 		e.createStateChat(update, MassageState)
 		e.changeBackButtonStatus(update, BackButtonMashaOrderMenu)
 		e.makeMarkupResponse(update, MassageQuestion, "", OrderButtons)
-	// Маникюр
+		// Маникюр
 	case MashaMenuButtons.Keyboard[0][1].Text == button:
 		e.createStateChat(update, ManicState)
 		e.changeBackButtonStatus(update, BackButtonMashaOrderMenu)
 		e.makeMarkupResponse(update, ManicQuestion, "", OrderButtons)
-	// Спорт
+		// Спорт
 	case MashaMenuButtons.Keyboard[1][0].Text == button:
 		e.createStateChat(update, SportState)
 		e.changeBackButtonStatus(update, BackButtonMashaOrderMenu)
 		e.makeMarkupResponse(update, SportQuestion, "", OrderButtons)
-	// Встреча
+		// Встреча
 	case MashaMenuButtons.Keyboard[1][1].Text == button:
 		e.createStateChat(update, MeetingState)
 		e.changeBackButtonStatus(update, BackButtonMashaOrderMenu)
 		e.makeMarkupResponse(update, MeetingQuestion, "", OrderButtons)
-	// Назад
+		// Назад
 	case MashaMenuButtons.Keyboard[3][0].Text == button && BackButtonStatus[update.Message.From.ID] == BackButtonMashaMenu:
 		e.makeMarkupResponse(update, MainMenu, "", MainMenuButtons)
 
@@ -101,12 +106,12 @@ func (e *storageUsecase) ButtonsHandle(update *tg.Update, button string) {
 		e.changeState(update, StateDate)
 		e.changeBackButtonStatus(update, BackButtonMashaMenu)
 		e.makeMarkupResponse(update, SignDate, "", CancelButton)
-	// Отменить
+		// Отменить
 	case OrderButtons.Keyboard[1][0].Text == button:
 		e.setDeleteModeState(update)
 		e.changeBackButtonStatus(update, BackButtonMashaMenu)
 		e.makeMarkupResponse(update, DeleteEvent, "", CancelButton)
-	// Назад
+		// Назад
 	case OrderButtons.Keyboard[2][0].Text == button && BackButtonStatus[update.Message.From.ID] == BackButtonMashaOrderMenu:
 		e.changeBackButtonStatus(update, BackButtonMashaMenu)
 		e.deleteChatState(update)
@@ -196,6 +201,13 @@ func (e *storageUsecase) IsChatState(userID int64) *State {
 func (e *storageUsecase) MakeResponse(update *tg.Update, text string) {
 	msg := tg.NewMessage(update.Message.Chat.ID, text)
 	defer func() { _, _ = e.bot.Send(msg) }()
+}
+
+func (e *storageUsecase) makeSliceResponse(update *tg.Update, cmdSlice []string) {
+	for _, cmd := range cmdSlice {
+		msg := tg.NewMessage(update.Message.Chat.ID, cmd)
+		e.bot.Send(msg)
+	}
 }
 
 func (e *storageUsecase) setDeleteModeState(update *tg.Update) {

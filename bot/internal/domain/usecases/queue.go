@@ -1,7 +1,7 @@
 package usecases
 
 import (
-	"saver-bot/internal/adapters/queue"
+	"bot/internal/adapters/queue"
 )
 
 type queueUsecase struct {

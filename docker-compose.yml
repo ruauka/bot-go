@@ -1,10 +1,10 @@
 version: "3.8"
 services:
-  telega-bot:
-    container_name: saver-bot
+  bot:
+    container_name: bot
     build:
-      context: ./saver-bot
-      dockerfile: saver-bot.Dockerfile
+      context: ./bot
+      dockerfile: bot.Dockerfile
     depends_on:
       - scheduler
 

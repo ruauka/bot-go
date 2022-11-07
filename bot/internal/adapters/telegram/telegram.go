@@ -5,8 +5,8 @@ import (
 
 	tg "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 
-	"saver-bot/internal/domain/usecases"
-	"saver-bot/internal/utils"
+	"bot/internal/domain/usecases"
+	"bot/internal/utils"
 )
 
 type App struct {

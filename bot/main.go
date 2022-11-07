@@ -4,13 +4,13 @@ import (
 	"fmt"
 	"log"
 
-	q "saver-bot/internal/adapters/queue"
-	s "saver-bot/internal/adapters/storage"
-	tg "saver-bot/internal/adapters/telegram"
-	"saver-bot/internal/domain/usecases"
-	"saver-bot/pkg/client/postgres"
-	"saver-bot/pkg/client/rabbitmq"
-	"saver-bot/pkg/client/telegram"
+	q "bot/internal/adapters/queue"
+	s "bot/internal/adapters/storage"
+	tg "bot/internal/adapters/telegram"
+	"bot/internal/domain/usecases"
+	"bot/pkg/client/postgres"
+	"bot/pkg/client/rabbitmq"
+	"bot/pkg/client/telegram"
 )
 
 func main() {
