@@ -17,35 +17,38 @@ const (
 )
 
 const (
-	StartCmd          = "start"
-	MenuCmd           = "menu"
-	Massage           = "Массаж"
-	Manic             = "Маникюр"
-	Sport             = "Спорт"
-	Meeting           = "Встреча"
-	HelloMsg          = "⬇ Привет, выбери пункт меню"
-	MainMenu          = "Главное меню"
-	SignDate          = "Шаг [1/2]\n\nУкажи дату. Формат: dd.mm.yyyy 🗓"
-	SignTime          = "Шаг [2/2]\n\nУкажи время. Формат: hh:mm 🕔"
-	DeleteEvent       = "Укажи дату и время записи.\nФормат: dd.mm.yyyy hh:mm 🗓"
-	SaveUpdate        = "Cохранил. Напомню тебе 👌"
-	DeleteUpdate      = "Отменил 👌"
-	DBProblem         = "Проблема с БД ❌"
-	WrongDateFormat   = "Некорректный формат даты ❌🗓"
-	WrongTimeFormat   = "Некорректный формат времени ❌🕔"
-	DateBeforeNow     = "Этот день уже прошел ❌"
-	TimeBeforeNow     = "Это время уже прошло ❌"
-	EmptyManic        = "Пока нет записей на маникюр 🤷‍♀"
-	EmptyMassage      = "Пока нет записей на массаж 🤷‍♀"
-	EmptySport        = "Пока нет записей на спорт 🤷‍♀"
-	EmptyMeeting      = "Пока нет встреч 🤷‍♀"
-	OtherMessagesPlug = "Ой, давай не сейчас..."
-	MashaMenu         = "Чем займемся?"
-	MassageQuestion   = "Что делаем с массажем?"
-	ManicQuestion     = "Что делаем с маникюром?"
-	SportQuestion     = "Что делаем со спортом?"
-	MeetingQuestion   = "Что делаем со встречей?"
-	EventNotFound     = "Не нашел такого 🤷‍♀"
+	StartCmd                 = "start"
+	MenuCmd                  = "menu"
+	Massage                  = "Массаж"
+	Manic                    = "Маникюр"
+	Sport                    = "Спорт"
+	Meeting                  = "Встреча"
+	HelloMsg                 = "⬇ Привет, выбери пункт меню"
+	MainMenu                 = "Главное меню"
+	SignDate                 = "Шаг [1/2]\n\nУкажи дату. Формат: dd.mm.yyyy 🗓"
+	SignTime                 = "Шаг [2/2]\n\nУкажи время. Формат: hh:mm 🕔"
+	DeleteEvent              = "Укажи дату и время записи.\nФормат: dd.mm.yyyy hh:mm 🗓"
+	SaveUpdate               = "Cохранил. Напомню тебе 👌"
+	DeleteUpdate             = "Отменил 👌"
+	DBProblem                = "Проблема с БД ❌"
+	WrongDateFormat          = "Некорректный формат даты ❌🗓"
+	WrongTimeFormat          = "Некорректный формат времени ❌🕔"
+	DateBeforeNow            = "Этот день уже прошел ❌"
+	TimeBeforeNow            = "Это время уже прошло ❌"
+	EmptyManic               = "Пока нет записей на маникюр 🤷‍♀"
+	EmptyMassage             = "Пока нет записей на массаж 🤷‍♀"
+	EmptySport               = "Пока нет записей на спорт 🤷‍♀"
+	EmptyMeeting             = "Пока нет встреч 🤷‍♀"
+	OtherMessagesPlug        = "Ой, давай не сейчас..."
+	MashaMenu                = "Чем займемся?"
+	MassageQuestion          = "Что делаем с массажем?"
+	ManicQuestion            = "Что делаем с маникюром?"
+	SportQuestion            = "Что делаем со спортом?"
+	MeetingQuestion          = "Что делаем со встречей?"
+	EventNotFound            = "Не нашел такого 🤷‍♀"
+	BackButtonMashaOrderMenu = "masha order menu"
+	BackButtonMashaMenu      = "masha menu"
+	BackButtonSashaMenu      = "sasha menu"
 )
 
 type State struct {
@@ -55,6 +58,8 @@ type State struct {
 	Date       string
 	Time       string
 }
+
+var BackButtonStatus = make(map[int64]string)
 
 var (
 	dateRe = regexp.MustCompile(`^\s*(3[01]|[12][0-9]|0?[1-9])\.(1[012]|0?[1-9])\.((?:19|20)\d{2})\s*$`)
@@ -72,13 +77,15 @@ var (
 
 	MainMenuButtons = tg.NewReplyKeyboard(
 		tg.NewKeyboardButtonRow(
-			tg.NewKeyboardButton("Саша"),
+			tg.NewKeyboardButton("👦 Саша"),
 		),
 		tg.NewKeyboardButtonRow(
-			tg.NewKeyboardButton("Маша"),
+			tg.NewKeyboardButton("👩 Маша"),
 		),
-		// погода
-		// курсы валют
+		tg.NewKeyboardButtonRow(
+			tg.NewKeyboardButton("🌦 Погода"),
+			tg.NewKeyboardButton("💵 Курсы валюты"),
+		),
 	)
 
 	MashaMenuButtons = tg.NewReplyKeyboard(
@@ -92,6 +99,24 @@ var (
 		),
 		tg.NewKeyboardButtonRow(
 			tg.NewKeyboardButton("Все мои записи"),
+		),
+		tg.NewKeyboardButtonRow(
+			tg.NewKeyboardButton("Назад"),
+		),
+	)
+
+	SashaMenuButtons = tg.NewReplyKeyboard(
+		tg.NewKeyboardButtonRow(
+			tg.NewKeyboardButton("🔨 Git"),
+		),
+		tg.NewKeyboardButtonRow(
+			tg.NewKeyboardButton("🔧 Docker"),
+		),
+		tg.NewKeyboardButtonRow(
+			tg.NewKeyboardButton("⛏ Kuber"),
+		),
+		tg.NewKeyboardButtonRow(
+			tg.NewKeyboardButton("Назад"),
 		),
 	)
 

@@ -9,9 +9,11 @@ func IsButton(text string) string {
 		return usecases.CancelButton.Keyboard[0][0].Text
 	}
 
-	for _, buttonName := range usecases.MainMenuButtons.Keyboard {
-		if buttonName[0].Text == text {
-			return buttonName[0].Text
+	for _, buttonSlice := range usecases.MainMenuButtons.Keyboard {
+		for _, buttonName := range buttonSlice {
+			if buttonName.Text == text {
+				return buttonName.Text
+			}
 		}
 	}
 
