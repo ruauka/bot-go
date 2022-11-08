@@ -4,6 +4,7 @@ import (
 	"regexp"
 
 	tg "github.com/go-telegram-bot-api/telegram-bot-api/v5"
+	"github.com/matperez/go-cbr-client"
 )
 
 const DatePointLayout = "02.01.2006"
@@ -50,6 +51,9 @@ const (
 	BackButtonMashaOrderMenu = "masha order menu"
 	BackButtonMashaMenu      = "masha menu"
 	BackButtonSashaMenu      = "sasha menu"
+	USD                      = "USD"
+	EURO                     = "EUR"
+	CBProblem                = "Не достучался до сайта ЦБ ❌"
 )
 
 type State struct {
@@ -59,6 +63,8 @@ type State struct {
 	Date       string
 	Time       string
 }
+
+var client = cbr.NewClient()
 
 var BackButtonStatus = make(map[int64]string)
 

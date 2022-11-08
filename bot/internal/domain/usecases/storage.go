@@ -59,7 +59,7 @@ func (e *storageUsecase) ButtonsHandle(update *tg.Update, button string) {
 		e.MakeResponse(update, "в разработке")
 		// Курсы валюты
 	case MainMenuButtons.Keyboard[2][1].Text == button:
-		e.MakeResponse(update, "в разработке")
+		e.currency(update)
 
 	// Sasha menu
 	// Git
@@ -377,4 +377,37 @@ func (e *storageUsecase) getAllEvents(update *tg.Update) {
 	for _, v := range meetings {
 		e.MakeResponse(update, fmt.Sprintf("🗓 Запись на %s", v.Date))
 	}
+}
+
+func (e *storageUsecase) currencyCall(update *tg.Update, currency string, date time.Time) float64 {
+	rate, err := client.GetRate(currency, date)
+	if err != nil {
+		e.MakeResponse(update, CBProblem)
+	}
+
+	return rate
+}
+
+func (e *storageUsecase) currency(update *tg.Update) {
+	yesterday := make([]float64, 2, 2)
+	today := make([]float64, 2, 2)
+	tomorrow := make([]float64, 2, 2)
+
+	yesterday[0] = e.currencyCall(update, USD, time.Now().Add(time.Hour*-24))
+	yesterday[1] = e.currencyCall(update, EURO, time.Now().Add(time.Hour*-24))
+	today[0] = e.currencyCall(update, USD, time.Now())
+	today[1] = e.currencyCall(update, EURO, time.Now())
+	tomorrow[0] = e.currencyCall(update, USD, time.Now().Add(time.Hour*24))
+	tomorrow[1] = e.currencyCall(update, EURO, time.Now().Add(time.Hour*24))
+
+	if today[0] == tomorrow[0] && today[1] == tomorrow[1] {
+		e.MakeResponse(update, fmt.Sprintf("Вчера:\n\n💵 Доллар: %.4f\n💶 Евро: %.4f", yesterday[0], yesterday[1]))
+		e.MakeResponse(update, fmt.Sprintf("Сейчас:\n\n💵 Доллар: %.4f\n💶 Евро: %.4f", today[0], today[1]))
+		e.MakeResponse(update, "На завтра:\n\n🤷‍♂ Курс пока не назначен")
+		return
+	}
+
+	e.MakeResponse(update, fmt.Sprintf("Вчера:\n\n💵 Доллар: %.4f\n💶 Евро: %.4f", yesterday[0], yesterday[1]))
+	e.MakeResponse(update, fmt.Sprintf("Сейчас:\n\n💵 Доллар: %.4f\n💶 Евро: %.4f", today[0], today[1]))
+	e.MakeResponse(update, fmt.Sprintf("На завтра:\n\n💵 Доллар: %.4f\n💶 Евро: %.4f", tomorrow[0], tomorrow[1]))
 }
