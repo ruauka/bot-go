@@ -68,7 +68,7 @@ jobs:
             # Remove bot container
             docker rm bot
             
-            # Remove bot container
+            # Remove scheduler container
             docker rm scheduler
 
             # Start docker-compose
