@@ -87,7 +87,7 @@ var (
 			tg.NewKeyboardButton("👦 Саша"),
 		),
 		tg.NewKeyboardButtonRow(
-			tg.NewKeyboardButton("👩 Маша"),
+			tg.NewKeyboardButton("👩 Маша33333"),
 		),
 		tg.NewKeyboardButtonRow(
 			tg.NewKeyboardButton("🌦 Погода"),
