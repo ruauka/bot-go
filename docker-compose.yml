@@ -2,19 +2,19 @@ version: "3.8"
 services:
   bot:
     container_name: bot
-#    build:
-#      context: ./bot
-#      dockerfile: bot.Dockerfile
-    image: ruauka/bot:latest
+    build:
+      context: ./bot
+      dockerfile: bot.Dockerfile
+#    image: ruauka/bot:latest
     depends_on:
       - scheduler
 
   scheduler:
     container_name: scheduler
-#    build:
-#      context: ./scheduler
-#      dockerfile: scheduler.Dockerfile
-    image: ruauka/scheduler:latest
+    build:
+      context: ./scheduler
+      dockerfile: scheduler.Dockerfile
+#    image: ruauka/scheduler:latest
     depends_on:
       queue:
         condition: service_healthy
