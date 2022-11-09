@@ -9,7 +9,7 @@ on:
       - master
 
 jobs:
-  build_and_push:
+  build_push:
     runs-on: ubuntu-latest
     if: github.event_name == 'push'
 #    needs:
