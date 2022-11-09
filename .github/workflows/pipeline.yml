@@ -55,12 +55,15 @@ jobs:
           script: |
             # Login into DockerHub
             docker login -u ${{ secrets.DOCKER_HUB_USERNAME }} -p ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
-                    
+            
             # cd
             cd bot
             
             # Stop docker-compose
             docker-compose stop
+                    
+            # Remove all images
+            docker rmi -f $(docker images -a -q)
             
             # Start docker-compose
             docker-compose up -d
