@@ -65,8 +65,11 @@ jobs:
             # Remove all images
             docker rmi -f $(docker images -a -q)
 
-            # Remove all containers
-            docker stop $(docker ps -a -q) && docker container rm $(docker ps -a -q)
+            # Remove bot container
+            docker rm bot
+            
+            # Remove bot container
+            docker rm scheduler
 
             # Start docker-compose
             docker-compose up -d
