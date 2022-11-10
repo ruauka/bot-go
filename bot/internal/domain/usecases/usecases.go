@@ -1,18 +1,23 @@
 package usecases
 
 import (
-	tg "github.com/go-telegram-bot-api/telegram-bot-api/v5"
+	"time"
+
+	"github.com/matperez/go-cbr-client"
 
 	"bot/internal/adapters/queue"
 	"bot/internal/adapters/storage"
+	"bot/internal/domain/entities"
 )
 
-type StorageUsecase interface {
-	CommandHandle(update *tg.Update)
-	ButtonsHandle(update *tg.Update, button string)
-	ChatStateHandle(update *tg.Update, state *State)
-	MakeResponse(update *tg.Update, text string)
-	IsChatState(userID int64) *State
+type EventUsecase interface {
+	Save(event *entities.Event) error
+	Remove(date, button, username string) error
+	GetAll() ([]entities.Event, error)
+}
+
+type CurrencyUsecase interface {
+	Get(currency string, date time.Time) (float64, error)
 }
 
 type QueueUsecase interface {
@@ -20,13 +25,15 @@ type QueueUsecase interface {
 }
 
 type Usecases struct {
-	Storage StorageUsecase
-	Queue   QueueUsecase
+	Event    EventUsecase
+	Currency CurrencyUsecase
+	Queue    QueueUsecase
 }
 
-func NewUsecases(storage storage.Storage, bot *tg.BotAPI, queue queue.Queue) *Usecases {
+func NewUsecases(storage storage.Storage, queue queue.Queue, CBRFClient cbr.Client) *Usecases {
 	return &Usecases{
-		Storage: NewStorageUsecase(storage, bot),
-		Queue:   NewQueueUsecase(queue),
+		Event:    NewEventUsecase(storage),
+		Currency: NewCurrencyUsecase(CBRFClient),
+		Queue:    NewQueueUsecase(queue),
 	}
 }
