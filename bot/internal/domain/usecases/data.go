@@ -84,7 +84,7 @@ var (
 
 	MainMenuButtons = tg.NewReplyKeyboard(
 		tg.NewKeyboardButtonRow(
-			tg.NewKeyboardButton("👦 Саша111"),
+			tg.NewKeyboardButton("👦 Саша"),
 		),
 		tg.NewKeyboardButtonRow(
 			tg.NewKeyboardButton("👩 Маша"),
@@ -154,6 +154,7 @@ var (
 	Git = []string{
 		"rm -rf .git",
 		"git checkout -b new_branch",
+		"git branch -d branch_name",
 	}
 
 	Docker = []string{
