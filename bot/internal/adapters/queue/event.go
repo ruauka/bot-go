@@ -14,8 +14,8 @@ import (
 var (
 	ManicSmall   = "маникюр"
 	MassageSmall = "массаж"
-	SportSmall   = "Спорт"
-	MeetingSmall = "Встреча"
+	SportSmall   = "спорт"
+	MeetingSmall = "встреча"
 	Massage      = "Массаж"
 	Manic        = "Маникюр"
 	Sport        = "Спорт"

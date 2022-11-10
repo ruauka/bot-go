@@ -1,8 +1,6 @@
 package usecases
 
-import (
-	"bot/internal/adapters/queue"
-)
+import "bot/internal/adapters/queue"
 
 type queueUsecase struct {
 	queue queue.Queue

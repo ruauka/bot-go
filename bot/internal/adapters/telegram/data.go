@@ -1,10 +1,9 @@
-package usecases
+package telegram
 
 import (
 	"regexp"
 
 	tg "github.com/go-telegram-bot-api/telegram-bot-api/v5"
-	"github.com/matperez/go-cbr-client"
 )
 
 const DatePointLayout = "02.01.2006"
@@ -63,8 +62,6 @@ type State struct {
 	Date       string
 	Time       string
 }
-
-var client = cbr.NewClient()
 
 var BackButtonStatus = make(map[int64]string)
 
