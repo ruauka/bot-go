@@ -33,7 +33,7 @@ func NewPostgresConnect() (*sqlx.DB, error) {
 		return nil, err
 	}
 
-	log.Println("Successful connection to the database...")
+	log.Println("Connect to database: ok")
 
 	makeMigrations(dsn)
 

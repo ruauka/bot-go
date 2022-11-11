@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"log"
+	"sync"
 	"time"
 
 	amqp "github.com/rabbitmq/amqp091-go"
@@ -13,9 +14,9 @@ import (
 )
 
 type App struct {
-	ch      *amqp.Channel
-	queue   amqp.Queue
-	storage storage.Storage
+	storage         storage.Storage
+	ch              *amqp.Channel
+	event, forecast amqp.Queue
 }
 
 func NewApp(conn *amqp.Connection, storage storage.Storage) *App {
@@ -24,105 +25,96 @@ func NewApp(conn *amqp.Connection, storage storage.Storage) *App {
 		log.Fatalf("Failed to open a channel: %s", err)
 	}
 
-	log.Println("Connect to channel: ok")
-
-	queue, err := ch.QueueDeclare(
-		"my_queue_1", // name
-		false,        // durable
-		false,        // delete when unused
-		false,        // exclusive
-		false,        // no-wait
-		nil,          // arguments
-	)
-	if err != nil {
-		log.Fatalf("Failed to declare a queue: %s", err)
-	}
+	defer log.Println("Connect to 'event' channel: ok")
+	defer log.Println("Connect to 'forecast' channel: ok")
 
 	return &App{
-		ch:      ch,
-		queue:   queue,
-		storage: storage,
+		ch:       ch,
+		event:    newQueueDeclare(ch, "event"),
+		forecast: newQueueDeclare(ch, "forecast"),
+		storage:  storage,
 	}
+}
+
+func newQueueDeclare(ch *amqp.Channel, queueName string) amqp.Queue {
+	queue, err := ch.QueueDeclare(
+		queueName, // name
+		false,     // durable
+		false,     // delete when unused
+		false,     // exclusive
+		false,     // no-wait
+		nil,       // arguments
+	)
+
+	if err != nil {
+		log.Fatalf("failed to declare a %s: %s", queueName, err.Error())
+	}
+
+	return queue
 }
 
 func (a *App) Start() {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
-	ticker := time.NewTicker(time.Second * 5)
-	defer ticker.Stop()
+	eventTicker := time.NewTicker(time.Second * 5)
+	defer eventTicker.Stop()
+
+	forecastTicker := time.NewTicker(time.Minute * 30)
+	defer forecastTicker.Stop()
 
 	defer func() { _ = a.ch.Close() }()
 
+	var once sync.Once
+	once.Do(func() {
+		a.SendToQueue(ctx, a.forecast.Name, a.YandexForecastCall())
+	})
+
 	for {
 		select {
-		case <-ticker.C:
+		case <-eventTicker.C:
 			allEvents := a.storage.GetAll(context.Background())
 
-			events := a.timeCheckEvent(allEvents)
+			events := timeCheckEvent(allEvents)
 			if len(events) != 0 {
 				for _, event := range events {
-					a.sendToQueue(ctx, event)
+					eventBytesBuff.Reset()
+					json.NewEncoder(eventBytesBuff).Encode(event)
+
+					a.SendToQueue(ctx, a.event.Name, eventBytesBuff.Bytes())
 				}
 			}
 
-			event := a.chooseUpcomingEvent(allEvents)
+			event := a.ChooseUpcomingEvent(allEvents)
 			if event == (entities.Event{}) {
 				log.Println("nothing for rabbit...")
 				continue
 			}
 
-			a.sendToQueue(ctx, event)
+			eventBytesBuff.Reset()
+			json.NewEncoder(eventBytesBuff).Encode(event)
+
+			a.SendToQueue(ctx, a.event.Name, eventBytesBuff.Bytes())
+
+		case <-forecastTicker.C:
+			resp := a.YandexForecastCall()
+			a.SendToQueue(ctx, a.forecast.Name, resp)
 		}
 	}
 }
 
-func (a *App) timeCheckEvent(allEvents []entities.Event) []entities.Event {
-	var events []entities.Event
-
-	for _, event := range allEvents {
-		if morningCheck(event.Date) {
-			event.ReminderStatus = 0
-			events = append(events, event)
-		}
-		if eveningCheck(event.Date) {
-			event.ReminderStatus = 1
-			events = append(events, event)
-		}
-	}
-
-	return events
-}
-
-func (a *App) chooseUpcomingEvent(events []entities.Event) entities.Event {
-	for _, event := range events {
-		if ((time.Since(convertDate(event.Date)).Minutes() + 180) * -1) < 60 {
-			a.storage.Delete(context.Background(), event.ID)
-			event.ReminderStatus = 2
-
-			return event
-		}
-	}
-
-	return entities.Event{}
-}
-
-func (a *App) sendToQueue(ctx context.Context, event entities.Event) {
-	ReqBodyBytes.Reset()
-
-	json.NewEncoder(ReqBodyBytes).Encode(event)
-
+func (a *App) SendToQueue(ctx context.Context, queueName string, message []byte) {
 	if err := a.ch.PublishWithContext(ctx,
-		"",           // exchange
-		a.queue.Name, // routing key
-		false,        // mandatory
-		false,        // immediate
+		"",        // exchange
+		queueName, // routing key
+		false,     // mandatory
+		false,     // immediate
 		amqp.Publishing{
 			ContentType: "text/plain",
-			Body:        ReqBodyBytes.Bytes(),
+			Body:        message,
 		}); err != nil {
 		log.Fatalf("Failed to publish a message: %s", err)
 	}
 
-	log.Printf("Sent a message: %v\n", event)
+	//log.Printf("Sent a message data in %s", queueName)
 }
