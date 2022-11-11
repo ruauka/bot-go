@@ -83,7 +83,8 @@ func (a *App) ButtonsHandle(update *tg.Update, button string) {
 		a.MakeMarkupResponse(update, MashaMenu, "", MashaMenuButtons)
 		// Погода
 	case MainMenuButtons.Keyboard[2][0].Text == button:
-		a.MakeResponse(update, "в разработке")
+		//a.MakeResponse(update, "в разработке")
+		a.Forecast(update)
 		// Курсы валюты
 	case MainMenuButtons.Keyboard[2][1].Text == button:
 		a.Currency(update)
