@@ -21,71 +21,38 @@ var (
 
 func eventCheck(event entities.Event) tg.MessageConfig {
 	if event.Type == Manic {
-		switch event.ReminderStatus {
-		case 0:
-			return tg.NewMessage(event.TelegaID,
-				fmt.Sprintf("Доброе утро. У тебя сегодня %s в %s 💅", ManicSmall, event.Date[11:]),
-			)
-		case 1:
-			return tg.NewMessage(event.TelegaID,
-				fmt.Sprintf("Напоминаю. У тебя завтра %s в %s 💅", ManicSmall, event.Date[11:]),
-			)
-		case 2:
-			return tg.NewMessage(event.TelegaID,
-				fmt.Sprintf("Напоминаю. У тебя через час %s в %s 💅", ManicSmall, event.Date[11:]),
-			)
-		}
+		return reminderRespCreate(event, ManicSmall, "💅")
 	}
 
 	if event.Type == Massage {
-		switch event.ReminderStatus {
-		case 0:
-			return tg.NewMessage(event.TelegaID,
-				fmt.Sprintf("Доброе утро. У тебя сегодня %s в %s 💆‍♀", MassageSmall, event.Date[11:]),
-			)
-		case 1:
-			return tg.NewMessage(event.TelegaID,
-				fmt.Sprintf("Напоминаю. У тебя завтра %s в %s 💆‍♀", MassageSmall, event.Date[11:]),
-			)
-		case 2:
-			return tg.NewMessage(event.TelegaID,
-				fmt.Sprintf("Напоминаю. У тебя через час %s в %s 💆‍♀", MassageSmall, event.Date[11:]),
-			)
-		}
+		return reminderRespCreate(event, MassageSmall, "💆‍♀")
 	}
 
 	if event.Type == Sport {
-		switch event.ReminderStatus {
-		case 0:
-			return tg.NewMessage(event.TelegaID,
-				fmt.Sprintf("Доброе утро. У тебя сегодня %s в %s 🏃‍♀", SportSmall, event.Date[11:]),
-			)
-		case 1:
-			return tg.NewMessage(event.TelegaID,
-				fmt.Sprintf("Напоминаю. У тебя завтра %s в %s 🏃‍♀", SportSmall, event.Date[11:]),
-			)
-		case 2:
-			return tg.NewMessage(event.TelegaID,
-				fmt.Sprintf("Напоминаю. У тебя через час %s в %s 🏃‍♀", SportSmall, event.Date[11:]),
-			)
-		}
+		return reminderRespCreate(event, SportSmall, "🏃‍♀")
 	}
 
 	if event.Type == Meeting {
-		switch event.ReminderStatus {
-		case 0:
-			return tg.NewMessage(event.TelegaID,
-				fmt.Sprintf("Доброе утро. У тебя сегодня %s в %s 🗓", MeetingSmall, event.Date[11:]),
-			)
-		case 1:
-			return tg.NewMessage(event.TelegaID,
-				fmt.Sprintf("Напоминаю. У тебя завтра %s в %s 🗓", MeetingSmall, event.Date[11:]),
-			)
-		case 2:
-			return tg.NewMessage(event.TelegaID,
-				fmt.Sprintf("Напоминаю. У тебя через час %s в %s 🗓", MeetingSmall, event.Date[11:]),
-			)
-		}
+		return reminderRespCreate(event, MeetingSmall, "🗓")
+	}
+
+	return tg.MessageConfig{}
+}
+
+func reminderRespCreate(event entities.Event, eventName, badge string) tg.MessageConfig {
+	switch event.ReminderStatus {
+	case 0:
+		return tg.NewMessage(event.TelegaID,
+			fmt.Sprintf("Доброе утро. У тебя сегодня %s в %s %s", eventName, event.Date[11:], badge),
+		)
+	case 1:
+		return tg.NewMessage(event.TelegaID,
+			fmt.Sprintf("Напоминаю. У тебя завтра %s в %s %s", eventName, event.Date[11:], badge),
+		)
+	case 2:
+		return tg.NewMessage(event.TelegaID,
+			fmt.Sprintf("Напоминаю. У тебя через час %s в %s %s", eventName, event.Date[11:], badge),
+		)
 	}
 
 	return tg.MessageConfig{}
