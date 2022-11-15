@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"log"
-	"sync"
 	"time"
 
 	amqp "github.com/rabbitmq/amqp091-go"
@@ -60,15 +59,15 @@ func (a *App) Start() {
 	eventTicker := time.NewTicker(time.Second * 5)
 	defer eventTicker.Stop()
 
-	forecastTicker := time.NewTicker(time.Minute * 30)
+	forecastTicker := time.NewTicker(time.Minute * 40)
 	defer forecastTicker.Stop()
 
 	defer func() { _ = a.ch.Close() }()
 
-	var once sync.Once
-	once.Do(func() {
-		a.SendToQueue(ctx, a.forecast.Name, a.YandexForecastCall())
-	})
+	//var once sync.Once
+	//once.Do(func() {
+	//	a.SendToQueue(ctx, a.forecast.Name, a.YandexForecastCall())
+	//})
 
 	for {
 		select {
