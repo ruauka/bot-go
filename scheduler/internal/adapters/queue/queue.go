@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"log"
+	"sync"
 	"time"
 
 	amqp "github.com/rabbitmq/amqp091-go"
@@ -64,10 +65,10 @@ func (a *App) Start() {
 
 	defer func() { _ = a.ch.Close() }()
 
-	//var once sync.Once
-	//once.Do(func() {
-	//	a.SendToQueue(ctx, a.forecast.Name, a.YandexForecastCall())
-	//})
+	var once sync.Once
+	once.Do(func() {
+		a.SendToQueue(ctx, a.forecast.Name, a.YandexForecastCall())
+	})
 
 	for {
 		select {

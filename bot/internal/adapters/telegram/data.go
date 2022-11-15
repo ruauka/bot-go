@@ -163,7 +163,9 @@ var (
 		"docker images",
 		"docker ps",
 		"docker volume ls",
+		"docker rmi image_name",
 		"docker rmi -f $(docker images -a -q)",
+		"docker container rm $(docker ps -a -q)",
 	}
 
 	Kuber = []string{
