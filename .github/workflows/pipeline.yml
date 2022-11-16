@@ -60,7 +60,7 @@ jobs:
             cd bot
 
             # Stop docker-compose
-            docker-compose stop
+            docker compose stop
 
             # Remove bot container and image
             docker rm bot && docker rmi ruauka/bot
@@ -69,4 +69,4 @@ jobs:
             docker rm scheduler && docker rmi ruauka/scheduler
 
             # Start docker-compose
-            docker-compose up -d
+            docker compose up -d
