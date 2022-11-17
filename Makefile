@@ -14,7 +14,7 @@ database:
  			-v db:/var/lib/postgresql/data \
  			-d postgres:latest
 dockerup:
-	docker compose up -d --build
+	docker-compose up -d --build
 
 dockerstop:
-	docker compose stop
+	docker-compose stop
