@@ -149,23 +149,29 @@ func NewState() map[int64]*State {
 
 var (
 	Git = []string{
-		"rm -rf .git",
-		"git checkout -b new_branch",
+		"------Branch------",
 		"git branch -d branch_name",
+		"git checkout -b new_branch",
+		"------Others------",
+		"rm -rf .git",
 	}
 
 	Docker = []string{
-		"docker build --tag=go-server .",
-		"docker run -d --name my-go-server -p 8080:8000 go-server",
-		"docker container stop my-go-server",
-		"docker container rm my-go-server",
-		"docker container logs my-go-server",
+		"------Image------",
+		"docker build --tag=image_name .",
+		"docker pull image_name",
 		"docker images",
-		"docker ps",
-		"docker volume ls",
 		"docker rmi image_name",
 		"docker rmi -f $(docker images -a -q)",
-		"docker container rm $(docker ps -a -q)",
+		"\n------Container------",
+		"docker run -d --name container_name -p 8080:8000 image_name",
+		"docker ps",
+		"docker stop container_name",
+		"docker rm container_name",
+		"docker logs container_name",
+		"docker rm $(docker ps -a -q)",
+		"\n------Volume------",
+		"docker volume ls",
 	}
 
 	Kuber = []string{
