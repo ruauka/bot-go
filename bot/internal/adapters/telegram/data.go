@@ -81,7 +81,7 @@ var (
 
 	MainMenuButtons = tg.NewReplyKeyboard(
 		tg.NewKeyboardButtonRow(
-			tg.NewKeyboardButton("👦 Саша1111"),
+			tg.NewKeyboardButton("👦 Саша"),
 		),
 		tg.NewKeyboardButtonRow(
 			tg.NewKeyboardButton("👩 Маша"),
