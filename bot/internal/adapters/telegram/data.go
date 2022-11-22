@@ -81,7 +81,7 @@ var (
 
 	MainMenuButtons = tg.NewReplyKeyboard(
 		tg.NewKeyboardButtonRow(
-			tg.NewKeyboardButton("👦 Саша"),
+			tg.NewKeyboardButton("👦 Саша1111"),
 		),
 		tg.NewKeyboardButtonRow(
 			tg.NewKeyboardButton("👩 Маша"),
@@ -149,28 +149,28 @@ func NewState() map[int64]*State {
 
 var (
 	Git = []string{
-		"------Branch------",
+		"------------Branch------------",
 		"git branch -d branch_name",
 		"git checkout -b new_branch",
-		"------Others------",
+		"------------Others------------",
 		"rm -rf .git",
 	}
 
 	Docker = []string{
-		"------Image------",
+		"------------Image------------",
 		"docker build --tag=image_name .",
 		"docker pull image_name",
 		"docker images",
 		"docker rmi image_name",
 		"docker rmi -f $(docker images -a -q)",
-		"\n------Container------",
+		"------------Container------------",
 		"docker run -d --name container_name -p 8080:8000 image_name",
 		"docker ps",
 		"docker stop container_name",
 		"docker rm container_name",
 		"docker logs container_name",
 		"docker rm $(docker ps -a -q)",
-		"\n------Volume------",
+		"------------Volume------------",
 		"docker volume ls",
 	}
 
