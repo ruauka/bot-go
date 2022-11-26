@@ -157,21 +157,28 @@ var (
 	}
 
 	Docker = []string{
-		"------------Image------------",
+		"-----------------Image-----------------",
 		"docker build --tag=image_name .",
 		"docker pull image_name",
 		"docker images",
 		"docker rmi image_name",
 		"docker rmi -f $(docker images -a -q)",
-		"------------Container------------",
+		"-----------------Container-----------------",
 		"docker run -d --name container_name -p 8080:8000 image_name",
+		"docker run -d --name container_name -e VAR_ENV_NAME_IN_CODE=env_name image_name",
 		"docker ps",
 		"docker stop container_name",
 		"docker rm container_name",
 		"docker logs container_name",
+		"docker exec -ti container_name sh",
 		"docker rm $(docker ps -a -q)",
-		"------------Volume------------",
+		"-----------------Volume-----------------",
 		"docker volume ls",
+		"-----------------Network-----------------",
+		"docker network create --driver=bridge test-net",
+		"docker run -dit --name container_name_1 test-net alpine",
+		"docker run -it --name container_name_2 test-net alpine",
+		"ping container_name_1",
 	}
 
 	Kuber = []string{
