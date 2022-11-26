@@ -11,7 +11,7 @@ on:
 jobs:
   build_push:
     runs-on: ubuntu-latest
-    if: github.event_name == 'push'
+#    if: github.event_name == 'push'
 #    needs:
 #      - test
 #      - lint
