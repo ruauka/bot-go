@@ -149,10 +149,10 @@ func NewState() map[int64]*State {
 
 var (
 	Git = []string{
-		"------------Branch------------",
+		"-----------------Branch-----------------",
 		"git branch -d branch_name",
 		"git checkout -b new_branch",
-		"------------Others------------",
+		"-----------------Others-----------------",
 		"rm -rf .git",
 	}
 
@@ -170,15 +170,22 @@ var (
 		"docker stop container_name",
 		"docker rm container_name",
 		"docker logs container_name",
+		"docker logs -f container_name (live logs)",
+		"docker inspect container_name",
 		"docker exec -ti container_name sh",
-		"docker rm $(docker ps -a -q)",
+		"docker rm -f $(docker ps -a -q)",
 		"-----------------Volume-----------------",
+		"docker volume create volume_name",
+		"docker volume rm volume_name",
 		"docker volume ls",
+		"docker inspect volume volume_name",
 		"-----------------Network-----------------",
 		"docker network create --driver=bridge test-net",
 		"docker run -dit --name container_name_1 test-net alpine",
 		"docker run -it --name container_name_2 test-net alpine",
 		"ping container_name_1",
+		"-----------------Others-----------------",
+		"docker system prune -a --volumes",
 	}
 
 	Kuber = []string{

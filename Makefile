@@ -5,7 +5,7 @@ mqstop:
 	docker stop rabbitmq && docker rm -f rabbitmq
 
 database:
-	docker run -d \
+	docker run -d --rm \
 			--name database \
  			-p 5432:5432 \
  			-e POSTGRES_USER=pg \
