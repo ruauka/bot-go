@@ -8,17 +8,19 @@ import (
 	_ "github.com/golang-migrate/migrate/v4/database/postgres"
 	_ "github.com/golang-migrate/migrate/v4/source/file"
 	"github.com/jmoiron/sqlx"
+
+	"scheduler/internal/config"
 )
 
 // NewPostgresConnect create connect with DB.
-func NewPostgresConnect() (*sqlx.DB, error) {
+func NewPostgresConnect(cfg *config.Config) (*sqlx.DB, error) {
 	dsn := fmt.Sprintf(
 		"postgres://%s:%s@%s:%s/%s?sslmode=%s",
-		"pg",
-		"pass",
+		cfg.PgUser,
+		cfg.PgPassword,
 		"database",
 		"5432",
-		"crud",
+		cfg.PgDbName,
 		"disable",
 	)
 

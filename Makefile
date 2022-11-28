@@ -1,8 +1,8 @@
 mqup:
-	docker run -d --name rabbitmq -p 5672:5672 -p 15672:15672 rabbitmq:latest
+	docker run -d --rm --name rabbitmq -p 5672:5672 -p 15672:15672 rabbitmq:latest
 
 mqstop:
-	docker stop rabbitmq && docker rm -f rabbitmq
+	docker stop rabbitmq
 
 database:
 	docker run -d --rm \
@@ -13,6 +13,7 @@ database:
  			-e POSTGRES_DB=crud \
  			-v db:/var/lib/postgresql/data \
  			postgres:latest
+
 dockerup:
 	docker-compose up -d --build
 

@@ -150,6 +150,7 @@ var (
 		"git checkout -b new_branch",
 		"-----------------Others-----------------",
 		"rm -rf .git",
+		"git rm -r --cached instance_name",
 	}
 
 	Docker = []string{
@@ -160,7 +161,7 @@ var (
 		"docker rmi image_name",
 		"docker rmi -f $(docker images -a -q)",
 		"-----------------Container-----------------",
-		"docker run -d --name container_name -p 8080:8000 image_name",
+		"docker run -d --rm --name container_name -p 8080:8000 image_name",
 		"docker run -d --name container_name -e VAR_ENV_NAME_IN_CODE=env_name image_name",
 		"docker run -d --name container_name -v db:/var/lib/postgresql/data postgres:latest",
 		"docker ps",
@@ -178,7 +179,7 @@ var (
 		"docker inspect volume volume_name",
 		"-----------------Network-----------------",
 		"docker network create --driver=bridge test-net",
-		"docker run -dit --name container_name_1 test-net alpine",
+		"docker run -d -it --name container_name_1 test-net alpine",
 		"docker run -it --name container_name_2 test-net alpine",
 		"ping container_name_1",
 		"-----------------Others-----------------",

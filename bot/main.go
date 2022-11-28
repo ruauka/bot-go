@@ -9,6 +9,7 @@ import (
 	q "bot/internal/adapters/queue"
 	s "bot/internal/adapters/storage"
 	tg "bot/internal/adapters/telegram"
+	"bot/internal/config"
 	"bot/internal/domain/usecases"
 	"bot/pkg/client/postgres"
 	"bot/pkg/client/rabbitmq"
@@ -16,7 +17,10 @@ import (
 )
 
 func main() {
-	bot, updates, err := telegram.NewTelegramBot()
+	// config create
+	cfg := config.GetConfig()
+
+	bot, updates, err := telegram.NewTelegramBot(cfg)
 	if err != nil {
 		log.Fatalf("failed to connect telegram: %s", err.Error())
 	}
@@ -31,7 +35,7 @@ func main() {
 	queue := q.NewQueue(bot, mq)
 
 	//db, err := sqlite.NewSqliteConnect()
-	db, err := postgres.NewPostgresConnect()
+	db, err := postgres.NewPostgresConnect(cfg)
 	if err != nil {
 		log.Fatal(fmt.Sprintf("failed to init db: %s", err.Error()))
 	}
