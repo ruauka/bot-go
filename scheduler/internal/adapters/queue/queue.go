@@ -10,6 +10,7 @@ import (
 	amqp "github.com/rabbitmq/amqp091-go"
 
 	"scheduler/internal/adapters/storage"
+	"scheduler/internal/config"
 	"scheduler/internal/entities"
 )
 
@@ -53,7 +54,7 @@ func newQueueDeclare(ch *amqp.Channel, queueName string) amqp.Queue {
 	return queue
 }
 
-func (a *App) Start() {
+func (a *App) Start(cfg *config.Config) {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
@@ -67,7 +68,7 @@ func (a *App) Start() {
 
 	var once sync.Once
 	once.Do(func() {
-		a.SendToQueue(ctx, a.forecast.Name, a.YandexForecastCall())
+		a.SendToQueue(ctx, a.forecast.Name, a.YandexForecastCall(cfg))
 	})
 
 	for {
@@ -97,7 +98,7 @@ func (a *App) Start() {
 			a.SendToQueue(ctx, a.event.Name, eventBytesBuff.Bytes())
 
 		case <-forecastTicker.C:
-			resp := a.YandexForecastCall()
+			resp := a.YandexForecastCall(cfg)
 			a.SendToQueue(ctx, a.forecast.Name, resp)
 		}
 	}

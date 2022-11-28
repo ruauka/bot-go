@@ -4,9 +4,11 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+
+	"scheduler/internal/config"
 )
 
-func (a *App) YandexForecastCall() []byte {
+func (a *App) YandexForecastCall(cfg *config.Config) []byte {
 	url := "https://api.weather.yandex.ru/v2/informers?lat=55.75222&lon=37.61556"
 
 	request, err := http.NewRequest("GET", url, nil)
@@ -14,7 +16,7 @@ func (a *App) YandexForecastCall() []byte {
 		log.Fatalf("Failed to connect to Yandex: %s", err.Error())
 	}
 
-	request.Header.Add("X-Yandex-API-Key", "03633f27-bab2-482e-b8f4-532f7775c13c")
+	request.Header.Add("X-Yandex-API-Key", cfg.YandexApiToken)
 	resp, err := http.DefaultClient.Do(request)
 	defer func() { _ = resp.Body.Close() }()
 
