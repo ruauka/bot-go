@@ -215,9 +215,11 @@ func isButton(text string) string {
 		}
 	}
 
-	for _, buttonName := range SashaMenuButtons.Keyboard {
-		if buttonName[0].Text == text {
-			return buttonName[0].Text
+	for _, buttonSlice := range SashaMenuButtons.Keyboard {
+		for _, buttonName := range buttonSlice {
+			if buttonName.Text == text {
+				return buttonName.Text
+			}
 		}
 	}
 

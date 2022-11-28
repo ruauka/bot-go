@@ -112,11 +112,7 @@ var (
 	SashaMenuButtons = tg.NewReplyKeyboard(
 		tg.NewKeyboardButtonRow(
 			tg.NewKeyboardButton("🗜 Git"),
-		),
-		tg.NewKeyboardButtonRow(
 			tg.NewKeyboardButton("🐳 Docker"),
-		),
-		tg.NewKeyboardButtonRow(
 			tg.NewKeyboardButton("🕸 Kuber"),
 		),
 		tg.NewKeyboardButtonRow(
@@ -166,13 +162,14 @@ var (
 		"-----------------Container-----------------",
 		"docker run -d --name container_name -p 8080:8000 image_name",
 		"docker run -d --name container_name -e VAR_ENV_NAME_IN_CODE=env_name image_name",
+		"docker run -d --name container_name -v db:/var/lib/postgresql/data postgres:latest",
 		"docker ps",
 		"docker stop container_name",
 		"docker rm container_name",
 		"docker logs container_name",
 		"docker logs -f container_name (live logs)",
 		"docker inspect container_name",
-		"docker exec -ti container_name sh",
+		"docker exec -it container_name sh",
 		"docker rm -f $(docker ps -a -q)",
 		"-----------------Volume-----------------",
 		"docker volume create volume_name",
