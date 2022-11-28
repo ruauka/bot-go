@@ -94,13 +94,13 @@ func (a *App) ButtonsHandle(update *tg.Update, button string) {
 	case SashaMenuButtons.Keyboard[0][0].Text == button:
 		a.MakeSliceResponse(update, Git)
 		// Docker
-	case SashaMenuButtons.Keyboard[1][0].Text == button:
+	case SashaMenuButtons.Keyboard[0][1].Text == button:
 		a.MakeSliceResponse(update, Docker)
 		// Kuber
-	case SashaMenuButtons.Keyboard[2][0].Text == button:
+	case SashaMenuButtons.Keyboard[0][2].Text == button:
 		a.MakeSliceResponse(update, Kuber)
 		// Назад
-	case SashaMenuButtons.Keyboard[3][0].Text == button && BackButtonStatus[update.Message.From.ID] == BackButtonSashaMenu:
+	case SashaMenuButtons.Keyboard[1][0].Text == button && BackButtonStatus[update.Message.From.ID] == BackButtonSashaMenu:
 		a.MakeMarkupResponse(update, MainMenu, "", MainMenuButtons)
 
 	// Masha menu
