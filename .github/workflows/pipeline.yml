@@ -1,15 +1,15 @@
 name: Pipeline
 
 on:
-  push:
-    branches:
-      - master
   pull_request:
+    types:
+      - closed
     branches:
       - master
 
 jobs:
   build_push:
+    if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
 #    if: github.event_name == 'push'
 #    needs:
@@ -42,8 +42,8 @@ jobs:
           tags: ${{ secrets.DOCKER_HUB_USERNAME }}/scheduler:latest
 
   deploy:
+    if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
-#    if: github.event_name == 'push'
     needs: build_push
     steps:
       - name: SSH connect
