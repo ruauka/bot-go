@@ -11,10 +11,6 @@ jobs:
   build_push:
     if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
-#    if: github.event_name == 'push'
-#    needs:
-#      - test
-#      - lint
     steps:
       - name: Checkout
         uses: actions/checkout@v3
