@@ -61,12 +61,7 @@ func morningCheck(date string) bool {
 	if currentDate.Year() == time.Now().Year() &&
 		currentDate.Month() == time.Now().Month() &&
 		currentDate.Day() == time.Now().Day() &&
-		time.Now().Hour() == 7-deduct && time.Now().Minute() == 40 &&
-		(time.Now().Second() == 0 ||
-			time.Now().Second() == 1 ||
-			time.Now().Second() == 2 ||
-			time.Now().Second() == 3 ||
-			time.Now().Second() == 4) {
+		time.Now().Hour() == 7-deduct && time.Now().Minute() == 40 {
 		return true
 	}
 
@@ -78,12 +73,7 @@ func eveningCheck(date string) bool {
 	if currentDate.Year() == time.Now().Year() &&
 		currentDate.Month() == time.Now().Month() &&
 		currentDate.Day() == time.Now().Day()+1 &&
-		time.Now().Hour() == 21-deduct && time.Now().Minute() == 30 &&
-		(time.Now().Second() == 0 ||
-			time.Now().Second() == 1 ||
-			time.Now().Second() == 2 ||
-			time.Now().Second() == 3 ||
-			time.Now().Second() == 4) {
+		time.Now().Hour() == 21-deduct && time.Now().Minute() == 30 {
 		return true
 	}
 
