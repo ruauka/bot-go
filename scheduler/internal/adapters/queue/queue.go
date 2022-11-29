@@ -58,7 +58,7 @@ func (a *App) Start(cfg *config.Config) {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
-	eventTicker := time.NewTicker(time.Second * 5)
+	eventTicker := time.NewTicker(time.Minute)
 	defer eventTicker.Stop()
 
 	forecastTicker := time.NewTicker(time.Minute * 40)
