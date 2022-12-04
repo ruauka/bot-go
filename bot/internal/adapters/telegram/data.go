@@ -151,6 +151,8 @@ var (
 		"-----------------Others-----------------",
 		"rm -rf .git",
 		"git rm -r --cached instance_name",
+		"git reset --hard HEAD && git clean -f",
+		"git commit --amend [-m 'new message'] -> :wq",
 	}
 
 	Docker = []string{
