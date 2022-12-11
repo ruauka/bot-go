@@ -15,9 +15,9 @@ import (
 )
 
 type App struct {
-	storage         storage.Storage
-	ch              *amqp.Channel
-	event, forecast amqp.Queue
+	storage             storage.Storage
+	ch                  *amqp.Channel
+	eventMQ, forecastMQ amqp.Queue
 }
 
 func NewApp(conn *amqp.Connection, storage storage.Storage) *App {
@@ -26,14 +26,14 @@ func NewApp(conn *amqp.Connection, storage storage.Storage) *App {
 		log.Fatalf("Failed to open a channel: %s", err)
 	}
 
-	defer log.Println("Connect to 'event' channel: ok")
-	defer log.Println("Connect to 'forecast' channel: ok")
+	defer log.Println("Connect to 'eventMQ' channel: ok")
+	defer log.Println("Connect to 'forecastMQ' channel: ok")
 
 	return &App{
-		ch:       ch,
-		event:    newQueueDeclare(ch, "event"),
-		forecast: newQueueDeclare(ch, "forecast"),
-		storage:  storage,
+		ch:         ch,
+		eventMQ:    newQueueDeclare(ch, "event"),
+		forecastMQ: newQueueDeclare(ch, "forecast"),
+		storage:    storage,
 	}
 }
 
@@ -68,7 +68,7 @@ func (a *App) Start(cfg *config.Config) {
 
 	var once sync.Once
 	once.Do(func() {
-		a.SendToQueue(ctx, a.forecast.Name, a.YandexForecastCall(cfg))
+		a.SendToQueue(ctx, a.forecastMQ.Name, a.YandexForecastCall(cfg), "forecast")
 	})
 
 	for {
@@ -82,7 +82,7 @@ func (a *App) Start(cfg *config.Config) {
 					eventBytesBuff.Reset()
 					json.NewEncoder(eventBytesBuff).Encode(event)
 
-					a.SendToQueue(ctx, a.event.Name, eventBytesBuff.Bytes())
+					a.SendToQueue(ctx, a.eventMQ.Name, eventBytesBuff.Bytes(), event.Type)
 				}
 			}
 
@@ -95,16 +95,16 @@ func (a *App) Start(cfg *config.Config) {
 			eventBytesBuff.Reset()
 			json.NewEncoder(eventBytesBuff).Encode(event)
 
-			a.SendToQueue(ctx, a.event.Name, eventBytesBuff.Bytes())
+			a.SendToQueue(ctx, a.eventMQ.Name, eventBytesBuff.Bytes(), event.Type)
 
 		case <-forecastTicker.C:
 			resp := a.YandexForecastCall(cfg)
-			a.SendToQueue(ctx, a.forecast.Name, resp)
+			a.SendToQueue(ctx, a.forecastMQ.Name, resp, "forecast")
 		}
 	}
 }
 
-func (a *App) SendToQueue(ctx context.Context, queueName string, message []byte) {
+func (a *App) SendToQueue(ctx context.Context, queueName string, message []byte, mess string) {
 	if err := a.ch.PublishWithContext(ctx,
 		"",        // exchange
 		queueName, // routing key
@@ -117,5 +117,5 @@ func (a *App) SendToQueue(ctx context.Context, queueName string, message []byte)
 		log.Fatalf("Failed to publish a message: %s", err)
 	}
 
-	//log.Printf("Sent a message data in %s", queueName)
+	log.Printf("Sent a message '%s' in %s", mess, queueName)
 }

@@ -14,11 +14,19 @@ import (
 
 // NewPostgresConnect create connect with DB.
 func NewPostgresConnect(cfg *config.Config) (*sqlx.DB, error) {
+	var host string
+
+	if cfg.Level == "dev" {
+		host = "localhost"
+	} else {
+		host = "database"
+	}
+
 	dsn := fmt.Sprintf(
 		"postgres://%s:%s@%s:%s/%s?sslmode=%s",
 		cfg.PgUser,
 		cfg.PgPassword,
-		"database",
+		host,
 		"5432",
 		cfg.PgDbName,
 		"disable",

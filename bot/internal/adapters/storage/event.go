@@ -20,9 +20,16 @@ func NewStorage(db *sqlx.DB) Storage {
 }
 
 func (e *storage) Save(ctx context.Context, event *entities.Event) error {
-	query := `INSERT INTO event (date, type, username, telega_id) VALUES ($1, $2, $3, $4)`
+	query := `INSERT INTO event (date, type, whom, username, telega_id) VALUES ($1, $2, $3, $4, $5)`
 
-	if _, err := e.db.ExecContext(ctx, query, event.Date, event.Type, event.Username, event.TelegaID); err != nil {
+	if _, err := e.db.ExecContext(
+		ctx, query,
+		event.Date,
+		event.Type,
+		event.Whom,
+		event.Username,
+		event.TelegaID,
+	); err != nil {
 		return fmt.Errorf("can't save event: %w", err)
 	}
 
@@ -32,7 +39,7 @@ func (e *storage) Save(ctx context.Context, event *entities.Event) error {
 func (e *storage) GetAll(ctx context.Context) ([]entities.Event, error) {
 	var events []entities.Event
 
-	query := fmt.Sprintf("SELECT id, date, type, username, telega_id FROM event")
+	query := fmt.Sprintf("SELECT id, date, whom, type, username, telega_id FROM event")
 	if err := e.db.SelectContext(ctx, &events, query); err != nil {
 		return events, err
 	}

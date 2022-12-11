@@ -22,7 +22,7 @@ func main() {
 
 	storage := s.NewEventStorage(db)
 
-	mq, err := rabbitmq.NewRabbitMQConnect()
+	mq, err := rabbitmq.NewRabbitMQConnect(cfg)
 	if err != nil {
 		log.Fatal(fmt.Sprintf("failed to connect to RabbitMQ: %s", err.Error()))
 	}

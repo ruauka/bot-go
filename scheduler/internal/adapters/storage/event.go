@@ -22,7 +22,7 @@ func NewEventStorage(db *sqlx.DB) Storage {
 func (e *eventStorage) GetAll(ctx context.Context) []entities.Event {
 	var events []entities.Event
 
-	query := fmt.Sprintf("SELECT id, date, type, username, telega_id FROM event")
+	query := fmt.Sprintf("SELECT id, date, whom, type, username, telega_id FROM event")
 	if err := e.db.SelectContext(ctx, &events, query); err != nil {
 		return nil
 	}

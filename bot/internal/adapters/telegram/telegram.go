@@ -131,13 +131,13 @@ func (a *App) ButtonsHandle(update *tg.Update, button string) {
 	// Order menu
 	// Создать
 	case OrderButtons.Keyboard[0][0].Text == button:
-		//// если создание Встречи
-		//if meetingChatCheck(update.Message.From.ID) {
-		//	changeState(update, StateDate)
-		//	changeBackButtonStatus(update, BackButtonMashaMenu)
-		//	a.MakeMarkupResponse(update, MeetingSignDate, "", CancelButton)
-		//	return
-		//}
+		// если создание Встречи
+		if meetingChatCheck(update.Message.From.ID) {
+			changeState(update, StateDate)
+			changeBackButtonStatus(update, BackButtonMashaMenu)
+			a.MakeMarkupResponse(update, MeetingSignDate, "", CancelButton)
+			return
+		}
 		changeState(update, StateDate)
 		changeBackButtonStatus(update, BackButtonMashaMenu)
 		a.MakeMarkupResponse(update, SignDate, "", CancelButton)
