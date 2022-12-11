@@ -24,7 +24,7 @@ package queue
 //        "season": "autumn",
 //        "wind_gust": 6.7
 //    },
-//    "forecast": {
+//    "forecastMQ": {
 //        "date": "2022-11-11",
 //        "date_ts": 1668114000,
 //        "week": 45,

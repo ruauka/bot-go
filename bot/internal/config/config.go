@@ -14,10 +14,10 @@ type Config struct {
 	PgUser          string `env:"POSTGRES_USER"`
 	PgPassword      string `env:"POSTGRES_PASSWORD"`
 	PgDbName        string `env:"POSTGRES_DB"`
+	Level           string `env:"LEVEL"`
 }
 
 // GetConfig - get env vars.
-
 func GetConfig() *Config {
 	cfg := &Config{}
 

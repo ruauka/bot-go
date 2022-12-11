@@ -30,14 +30,14 @@ func (a *App) ChatStateHandle(update *tg.Update, state *State) {
 		if !a.DateCheck(update, SignDate) {
 			break
 		}
-		//
-		//// если создание Встречи
-		//if state.ChatName == Meeting {
-		//	state.Date = update.Message.Text
-		//	a.MakeMarkupResponse(update, MeetingSignTime, "", CancelButton)
-		//	state.State = StateTime
-		//	break
-		//}
+
+		// если создание Встречи
+		if state.ChatName == Meeting {
+			state.Date = update.Message.Text
+			a.MakeMarkupResponse(update, MeetingSignTime, "", CancelButton)
+			state.State = StateTime
+			break
+		}
 
 		state.Date = update.Message.Text
 		a.MakeMarkupResponse(update, SignTime, "", CancelButton)
@@ -51,13 +51,13 @@ func (a *App) ChatStateHandle(update *tg.Update, state *State) {
 			break
 		}
 
-		//// если создание Встречи
-		//if state.ChatName == Meeting {
-		//	state.Date = update.Message.Text
-		//	a.MakeMarkupResponse(update, MeetingSignWithWhom, "", CancelButton)
-		//	state.State = StateMeeting
-		//	break
-		//}
+		// если создание Встречи
+		if state.ChatName == Meeting {
+			state.Time = update.Message.Text
+			a.MakeMarkupResponse(update, MeetingSignWithWhom, "", CancelButton)
+			state.State = StateMeeting
+			break
+		}
 
 		state.Time = update.Message.Text
 
@@ -66,16 +66,13 @@ func (a *App) ChatStateHandle(update *tg.Update, state *State) {
 		switch state.ChatName {
 		case Manic:
 			defer delete(ManicState, update.Message.From.ID)
-			payload = makePayload(update, state.ChatName, ManicState)
+			payload = makePayload(update, state.ChatName, "", ManicState)
 		case Massage:
 			defer delete(MassageState, update.Message.From.ID)
-			payload = makePayload(update, state.ChatName, MassageState)
+			payload = makePayload(update, state.ChatName, "", MassageState)
 		case Sport:
 			defer delete(SportState, update.Message.From.ID)
-			payload = makePayload(update, state.ChatName, SportState)
-		case Meeting:
-			defer delete(MeetingState, update.Message.From.ID)
-			payload = makePayload(update, state.ChatName, MeetingState)
+			payload = makePayload(update, state.ChatName, "", SportState)
 		}
 
 		err := a.usecases.Event.Save(&payload)
@@ -84,33 +81,18 @@ func (a *App) ChatStateHandle(update *tg.Update, state *State) {
 		}
 
 		a.MakeMarkupResponse(update, MainMenu, SaveUpdate, MashaMenuButtons)
-		//case StateMeeting:
-		//
-		//	state.Time = update.Message.Text
-		//
-		//	payload := entities.Event{}
-		//
-		//	switch state.ChatName {
-		//	case Manic:
-		//		defer delete(ManicState, update.Message.From.ID)
-		//		payload = makePayload(update, state.ChatName, ManicState)
-		//	case Massage:
-		//		defer delete(MassageState, update.Message.From.ID)
-		//		payload = makePayload(update, state.ChatName, MassageState)
-		//	case Sport:
-		//		defer delete(SportState, update.Message.From.ID)
-		//		payload = makePayload(update, state.ChatName, SportState)
-		//	case Meeting:
-		//		defer delete(MeetingState, update.Message.From.ID)
-		//		payload = makePayload(update, state.ChatName, MeetingState)
-		//	}
-		//
-		//	err := a.usecases.Event.Save(&payload)
-		//	if err != nil {
-		//		a.MakeResponse(update, DBProblem)
-		//	}
-		//
-		//	a.MakeMarkupResponse(update, MainMenu, SaveUpdate, MashaMenuButtons)
+	case StateMeeting:
+		payload := entities.Event{}
+
+		defer delete(MeetingState, update.Message.From.ID)
+		payload = makePayload(update, state.ChatName, update.Message.Text, MeetingState)
+
+		err := a.usecases.Event.Save(&payload)
+		if err != nil {
+			a.MakeResponse(update, DBProblem)
+		}
+
+		a.MakeMarkupResponse(update, MainMenu, SaveUpdate, MashaMenuButtons)
 	}
 }
 
@@ -123,10 +105,11 @@ func (a *App) GetAllEvents(update *tg.Update) {
 	var manics []entities.EventAll
 	var massages []entities.EventAll
 	var sports []entities.EventAll
-	var meetings []entities.EventAll
+	var meetings []entities.EventMeeting
 
 	for _, event := range events {
 		e := entities.EventAll{}
+		m := entities.EventMeeting{}
 
 		if event.Type == Manic {
 			e.Date = event.Date
@@ -141,8 +124,9 @@ func (a *App) GetAllEvents(update *tg.Update) {
 			sports = append(sports, e)
 		}
 		if event.Type == Meeting {
-			e.Date = event.Date
-			meetings = append(meetings, e)
+			m.Date = event.Date
+			m.Whom = event.Whom
+			meetings = append(meetings, m)
 		}
 	}
 
@@ -169,7 +153,7 @@ func (a *App) GetAllEvents(update *tg.Update) {
 		a.MakeResponse(update, fmt.Sprintf("🏃‍♀ Запись на %s", v.Date))
 	}
 	for _, v := range meetings {
-		a.MakeResponse(update, fmt.Sprintf("🗓 Запись на %s", v.Date))
+		a.MakeResponse(update, fmt.Sprintf("🗓 Встреча %s на %s", v.Whom, v.Date))
 	}
 }
 
@@ -295,15 +279,14 @@ func isChatState(userID int64) *State {
 	return nil
 }
 
-//
-//func meetingChatCheck(userID int64) bool {
-//	_, ok := MeetingState[userID]
-//	if ok {
-//		return true
-//	}
-//
-//	return false
-//}
+func meetingChatCheck(userID int64) bool {
+	_, ok := MeetingState[userID]
+	if ok {
+		return true
+	}
+
+	return false
+}
 
 func setDeleteModeState(update *tg.Update) {
 	chatState := isChatState(update.Message.From.ID)
@@ -320,12 +303,13 @@ func changeState(update *tg.Update, state int) {
 func createStateChat(update *tg.Update, state map[int64]*State, chatName string) {
 	state[update.Message.From.ID] = new(State)
 	state[update.Message.From.ID].State = StateQuestion
-	//state[update.Message.From.ID].ChatName = chatName
+	state[update.Message.From.ID].ChatName = chatName
 }
 
-func makePayload(update *tg.Update, chatName string, state map[int64]*State) entities.Event {
+func makePayload(update *tg.Update, chatName, whom string, state map[int64]*State) entities.Event {
 	return entities.Event{
 		Date:     concat(update, state),
+		Whom:     whom,
 		Type:     chatName,
 		Username: update.Message.From.UserName,
 		TelegaID: update.Message.From.ID,
