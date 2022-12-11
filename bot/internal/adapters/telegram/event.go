@@ -30,11 +30,19 @@ func (a *App) ChatStateHandle(update *tg.Update, state *State) {
 		if !a.DateCheck(update, SignDate) {
 			break
 		}
+		//
+		//// если создание Встречи
+		//if state.ChatName == Meeting {
+		//	state.Date = update.Message.Text
+		//	a.MakeMarkupResponse(update, MeetingSignTime, "", CancelButton)
+		//	state.State = StateTime
+		//	break
+		//}
 
 		state.Date = update.Message.Text
 		a.MakeMarkupResponse(update, SignTime, "", CancelButton)
 		state.State = StateTime
-	default:
+	case StateTime:
 		if !a.RegExpCheck(timeRe, update, WrongTimeFormat, SignTime) {
 			break
 		}
@@ -42,6 +50,14 @@ func (a *App) ChatStateHandle(update *tg.Update, state *State) {
 		if !a.TimeCheck(update, state, SignTime) {
 			break
 		}
+
+		//// если создание Встречи
+		//if state.ChatName == Meeting {
+		//	state.Date = update.Message.Text
+		//	a.MakeMarkupResponse(update, MeetingSignWithWhom, "", CancelButton)
+		//	state.State = StateMeeting
+		//	break
+		//}
 
 		state.Time = update.Message.Text
 
@@ -68,6 +84,33 @@ func (a *App) ChatStateHandle(update *tg.Update, state *State) {
 		}
 
 		a.MakeMarkupResponse(update, MainMenu, SaveUpdate, MashaMenuButtons)
+		//case StateMeeting:
+		//
+		//	state.Time = update.Message.Text
+		//
+		//	payload := entities.Event{}
+		//
+		//	switch state.ChatName {
+		//	case Manic:
+		//		defer delete(ManicState, update.Message.From.ID)
+		//		payload = makePayload(update, state.ChatName, ManicState)
+		//	case Massage:
+		//		defer delete(MassageState, update.Message.From.ID)
+		//		payload = makePayload(update, state.ChatName, MassageState)
+		//	case Sport:
+		//		defer delete(SportState, update.Message.From.ID)
+		//		payload = makePayload(update, state.ChatName, SportState)
+		//	case Meeting:
+		//		defer delete(MeetingState, update.Message.From.ID)
+		//		payload = makePayload(update, state.ChatName, MeetingState)
+		//	}
+		//
+		//	err := a.usecases.Event.Save(&payload)
+		//	if err != nil {
+		//		a.MakeResponse(update, DBProblem)
+		//	}
+		//
+		//	a.MakeMarkupResponse(update, MainMenu, SaveUpdate, MashaMenuButtons)
 	}
 }
 
@@ -252,6 +295,16 @@ func isChatState(userID int64) *State {
 	return nil
 }
 
+//
+//func meetingChatCheck(userID int64) bool {
+//	_, ok := MeetingState[userID]
+//	if ok {
+//		return true
+//	}
+//
+//	return false
+//}
+
 func setDeleteModeState(update *tg.Update) {
 	chatState := isChatState(update.Message.From.ID)
 	chatState.DeleteMode = true
@@ -264,9 +317,10 @@ func changeState(update *tg.Update, state int) {
 	chatState.State = state
 }
 
-func createStateChat(update *tg.Update, state map[int64]*State) {
+func createStateChat(update *tg.Update, state map[int64]*State, chatName string) {
 	state[update.Message.From.ID] = new(State)
 	state[update.Message.From.ID].State = StateQuestion
+	//state[update.Message.From.ID].ChatName = chatName
 }
 
 func makePayload(update *tg.Update, chatName string, state map[int64]*State) entities.Event {

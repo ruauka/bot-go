@@ -9,7 +9,15 @@ import (
 )
 
 func NewTelegramBot(cfg *config.Config) (*tg.BotAPI, tg.UpdatesChannel, error) {
-	bot, err := tg.NewBotAPI(cfg.TelegaToken)
+	var token string
+
+	if cfg.TelegaTokenProd == "" {
+		token = cfg.TelegaTokenDev
+	} else {
+		token = cfg.TelegaTokenProd
+	}
+
+	bot, err := tg.NewBotAPI(token)
 	if err != nil {
 		return nil, nil, err
 	}

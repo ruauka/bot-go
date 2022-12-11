@@ -9,13 +9,15 @@ import (
 
 // Config .
 type Config struct {
-	TelegaToken string `env:"TELEGA_TOKEN"`
-	PgUser      string `env:"POSTGRES_USER"`
-	PgPassword  string `env:"POSTGRES_PASSWORD"`
-	PgDbName    string `env:"POSTGRES_DB"`
+	TelegaTokenProd string `env:"TELEGA_TOKEN_PROD"`
+	TelegaTokenDev  string `env:"TELEGA_TOKEN_DEV"`
+	PgUser          string `env:"POSTGRES_USER"`
+	PgPassword      string `env:"POSTGRES_PASSWORD"`
+	PgDbName        string `env:"POSTGRES_DB"`
 }
 
 // GetConfig - get env vars.
+
 func GetConfig() *Config {
 	cfg := &Config{}
 

@@ -106,22 +106,22 @@ func (a *App) ButtonsHandle(update *tg.Update, button string) {
 	// Masha menu
 	// Массаж
 	case MashaMenuButtons.Keyboard[0][0].Text == button:
-		createStateChat(update, MassageState)
+		createStateChat(update, MassageState, Massage)
 		changeBackButtonStatus(update, BackButtonMashaOrderMenu)
 		a.MakeMarkupResponse(update, MassageQuestion, "", OrderButtons)
 		// Маникюр
 	case MashaMenuButtons.Keyboard[0][1].Text == button:
-		createStateChat(update, ManicState)
+		createStateChat(update, ManicState, Manic)
 		changeBackButtonStatus(update, BackButtonMashaOrderMenu)
 		a.MakeMarkupResponse(update, ManicQuestion, "", OrderButtons)
 		// Спорт
 	case MashaMenuButtons.Keyboard[1][0].Text == button:
-		createStateChat(update, SportState)
+		createStateChat(update, SportState, Sport)
 		changeBackButtonStatus(update, BackButtonMashaOrderMenu)
 		a.MakeMarkupResponse(update, SportQuestion, "", OrderButtons)
 		// Встреча
 	case MashaMenuButtons.Keyboard[1][1].Text == button:
-		createStateChat(update, MeetingState)
+		createStateChat(update, MeetingState, Meeting)
 		changeBackButtonStatus(update, BackButtonMashaOrderMenu)
 		a.MakeMarkupResponse(update, MeetingQuestion, "", OrderButtons)
 		// Назад
@@ -131,6 +131,13 @@ func (a *App) ButtonsHandle(update *tg.Update, button string) {
 	// Order menu
 	// Создать
 	case OrderButtons.Keyboard[0][0].Text == button:
+		//// если создание Встречи
+		//if meetingChatCheck(update.Message.From.ID) {
+		//	changeState(update, StateDate)
+		//	changeBackButtonStatus(update, BackButtonMashaMenu)
+		//	a.MakeMarkupResponse(update, MeetingSignDate, "", CancelButton)
+		//	return
+		//}
 		changeState(update, StateDate)
 		changeBackButtonStatus(update, BackButtonMashaMenu)
 		a.MakeMarkupResponse(update, SignDate, "", CancelButton)
