@@ -23,77 +23,92 @@ func (a *App) ChatStateHandle(update *tg.Update, state *State) {
 
 	switch state.State {
 	case StateDate:
-		if !a.RegExpCheck(dateRe, update, WrongDateFormat, SignDate) {
-			break
-		}
-
-		if !a.DateCheck(update, SignDate) {
-			break
-		}
-
-		// если создание Встречи
-		if state.ChatName == Meeting {
-			state.Date = update.Message.Text
-			a.MakeMarkupResponse(update, MeetingSignTime, "", CancelButton)
-			state.State = StateTime
-			break
-		}
-
-		state.Date = update.Message.Text
-		a.MakeMarkupResponse(update, SignTime, "", CancelButton)
-		state.State = StateTime
+		a.StateDateProcessing(update, state)
+		return
 	case StateTime:
-		if !a.RegExpCheck(timeRe, update, WrongTimeFormat, SignTime) {
-			break
-		}
-
-		if !a.TimeCheck(update, state, SignTime) {
-			break
-		}
-
-		// если создание Встречи
-		if state.ChatName == Meeting {
-			state.Time = update.Message.Text
-			a.MakeMarkupResponse(update, MeetingSignWithWhom, "", CancelButton)
-			state.State = StateMeeting
-			break
-		}
-
-		state.Time = update.Message.Text
-
-		payload := entities.Event{}
-
-		switch state.ChatName {
-		case Manic:
-			defer delete(ManicState, update.Message.From.ID)
-			payload = makePayload(update, state.ChatName, "", ManicState)
-		case Massage:
-			defer delete(MassageState, update.Message.From.ID)
-			payload = makePayload(update, state.ChatName, "", MassageState)
-		case Sport:
-			defer delete(SportState, update.Message.From.ID)
-			payload = makePayload(update, state.ChatName, "", SportState)
-		}
-
-		err := a.usecases.Event.Save(&payload)
-		if err != nil {
-			a.MakeResponse(update, DBProblem)
-		}
-
-		a.MakeMarkupResponse(update, MainMenu, SaveUpdate, MashaMenuButtons)
+		a.StateTimeProcessing(update, state)
+		return
 	case StateMeeting:
-		payload := entities.Event{}
-
-		defer delete(MeetingState, update.Message.From.ID)
-		payload = makePayload(update, state.ChatName, update.Message.Text, MeetingState)
-
-		err := a.usecases.Event.Save(&payload)
-		if err != nil {
-			a.MakeResponse(update, DBProblem)
-		}
-
-		a.MakeMarkupResponse(update, MainMenu, SaveUpdate, MashaMenuButtons)
+		a.StateMeetingProcessing(update, state)
+		return
 	}
+}
+
+func (a *App) StateDateProcessing(update *tg.Update, state *State) {
+	if !a.RegExpCheck(dateRe, update, WrongDateFormat, SignDate) {
+		return
+	}
+
+	if !a.DateCheck(update, SignDate) {
+		return
+	}
+
+	// если создание Встречи
+	if state.ChatName == Meeting {
+		state.Date = update.Message.Text
+		a.MakeMarkupResponse(update, MeetingSignTime, "", CancelButton)
+		state.State = StateTime
+		return
+	}
+
+	state.Date = update.Message.Text
+	a.MakeMarkupResponse(update, SignTime, "", CancelButton)
+	state.State = StateTime
+}
+
+func (a *App) StateTimeProcessing(update *tg.Update, state *State) {
+	if !a.RegExpCheck(timeRe, update, WrongTimeFormat, SignTime) {
+		return
+	}
+
+	if !a.TimeCheck(update, state, SignTime) {
+		return
+	}
+
+	// если создание Встречи
+	if state.ChatName == Meeting {
+		state.Time = update.Message.Text
+		a.MakeMarkupResponse(update, MeetingSignWithWhom, "", CancelButton)
+		state.State = StateMeeting
+		return
+	}
+
+	state.Time = update.Message.Text
+
+	payload := entities.Event{}
+
+	switch state.ChatName {
+	case Manic:
+		defer delete(ManicState, update.Message.From.ID)
+		payload = makePayload(update, state.ChatName, "", ManicState)
+	case Massage:
+		defer delete(MassageState, update.Message.From.ID)
+		payload = makePayload(update, state.ChatName, "", MassageState)
+	case Sport:
+		defer delete(SportState, update.Message.From.ID)
+		payload = makePayload(update, state.ChatName, "", SportState)
+	}
+
+	err := a.usecases.Event.Save(&payload)
+	if err != nil {
+		a.MakeResponse(update, DBProblem)
+	}
+
+	a.MakeMarkupResponse(update, MainMenu, SaveUpdate, MashaMenuButtons)
+}
+
+func (a *App) StateMeetingProcessing(update *tg.Update, state *State) {
+	payload := entities.Event{}
+
+	defer delete(MeetingState, update.Message.From.ID)
+	payload = makePayload(update, state.ChatName, update.Message.Text, MeetingState)
+
+	err := a.usecases.Event.Save(&payload)
+	if err != nil {
+		a.MakeResponse(update, DBProblem)
+	}
+
+	a.MakeMarkupResponse(update, MainMenu, SaveUpdate, MashaMenuButtons)
 }
 
 func (a *App) GetAllEvents(update *tg.Update) {
