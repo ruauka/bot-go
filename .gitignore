@@ -7,6 +7,7 @@
 *.so
 *.db
 *.dylib
+*.env
 .idea
 .DS_Store
 .gen
@@ -19,5 +20,3 @@
 
 # Dependency directories (remove the comment below to include it)
 # vendor/
-
-docker-compose.yml

@@ -14,19 +14,23 @@ const (
 	StateQuestion = iota
 	StateDate
 	StateTime
+	//StateMeeting
 )
 
 const (
-	StartCmd                 = "start"
-	MenuCmd                  = "menu"
-	Massage                  = "Массаж"
-	Manic                    = "Маникюр"
-	Sport                    = "Спорт"
-	Meeting                  = "Встреча"
-	HelloMsg                 = "⬇ Привет, выбери пункт меню"
-	MainMenu                 = "Главное меню"
-	SignDate                 = "Шаг [1/2]\n\nУкажи дату. Формат: dd.mm.yyyy 🗓"
-	SignTime                 = "Шаг [2/2]\n\nУкажи время. Формат: hh:mm 🕔"
+	StartCmd = "start"
+	MenuCmd  = "menu"
+	Massage  = "Массаж"
+	Manic    = "Маникюр"
+	Sport    = "Спорт"
+	Meeting  = "Встреча"
+	HelloMsg = "⬇ Привет, выбери пункт меню"
+	MainMenu = "Главное меню"
+	SignDate = "Шаг [1/2]\n\nУкажи дату. Формат: dd.mm.yyyy 🗓"
+	SignTime = "Шаг [2/2]\n\nУкажи время. Формат: hh:mm 🕔"
+	//MeetingSignDate          = "Шаг [1/3]\n\nУкажи дату. Формат: dd.mm.yyyy 🗓"
+	//MeetingSignTime          = "Шаг [2/3]\n\nУкажи время. Формат: hh:mm 🕔"
+	//MeetingSignWithWhom      = "Шаг [3/3]\n\nУкажи с кем встреча."
 	DeleteEvent              = "Укажи дату и время записи.\nФормат: dd.mm.yyyy hh:mm 🗓"
 	SaveUpdate               = "Cохранил. Напомню тебе 👌"
 	DeleteUpdate             = "Отменил 👌"
