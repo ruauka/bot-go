@@ -70,7 +70,7 @@ func (a *App) Start(cfg *config.Config) {
 	once.Do(func() {
 		resp, err := a.YandexForecastCall(cfg)
 		if err != nil {
-			log.Fatalf("Failed to connect to Yandex: %s\n", err.Error())
+			log.Fatalf("Failed to connect to Yandex: %s\n", err)
 		}
 
 		a.SendToQueue(ctx, a.forecastMQ.Name, resp, "forecast")

@@ -17,6 +17,10 @@ func (a *App) YandexForecastCall(cfg *config.Config) ([]byte, error) {
 
 	request.Header.Add("X-Yandex-API-Key", cfg.YandexApiToken)
 	resp, err := http.DefaultClient.Do(request)
+	if err != nil {
+		return nil, err
+	}
+
 	defer func() { _ = resp.Body.Close() }()
 
 	body, _ := ioutil.ReadAll(resp.Body)
