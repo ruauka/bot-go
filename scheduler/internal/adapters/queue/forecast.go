@@ -2,18 +2,17 @@ package queue
 
 import (
 	"io/ioutil"
-	"log"
 	"net/http"
 
 	"scheduler/internal/config"
 )
 
-func (a *App) YandexForecastCall(cfg *config.Config) []byte {
+func (a *App) YandexForecastCall(cfg *config.Config) ([]byte, error) {
 	url := "https://api.weather.yandex.ru/v2/informers?lat=55.75222&lon=37.61556"
 
 	request, err := http.NewRequest("GET", url, nil)
 	if err != nil {
-		log.Fatalf("Failed to connect to Yandex: %s", err.Error())
+		return nil, err
 	}
 
 	request.Header.Add("X-Yandex-API-Key", cfg.YandexApiToken)
@@ -24,5 +23,5 @@ func (a *App) YandexForecastCall(cfg *config.Config) []byte {
 
 	//log.Println("call ya")
 
-	return body
+	return body, nil
 }

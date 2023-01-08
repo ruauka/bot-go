@@ -68,7 +68,12 @@ func (a *App) Start(cfg *config.Config) {
 
 	var once sync.Once
 	once.Do(func() {
-		a.SendToQueue(ctx, a.forecastMQ.Name, a.YandexForecastCall(cfg), "forecast")
+		resp, err := a.YandexForecastCall(cfg)
+		if err != nil {
+			log.Fatalf("Failed to connect to Yandex: %s\n", err.Error())
+		}
+
+		a.SendToQueue(ctx, a.forecastMQ.Name, resp, "forecast")
 	})
 
 	for {
@@ -98,7 +103,11 @@ func (a *App) Start(cfg *config.Config) {
 			a.SendToQueue(ctx, a.eventMQ.Name, eventBytesBuff.Bytes(), event.Type)
 
 		case <-forecastTicker.C:
-			resp := a.YandexForecastCall(cfg)
+			resp, err := a.YandexForecastCall(cfg)
+			if err != nil {
+				log.Printf("Failed to connect to Yandex: %s\n", err.Error())
+				continue
+			}
 			a.SendToQueue(ctx, a.forecastMQ.Name, resp, "forecast")
 		}
 	}
