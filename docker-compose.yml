@@ -8,6 +8,7 @@ services:
     #    image: ruauka/bot:latest
     env_file:
       - creds.env
+    restart: always
     depends_on:
       - scheduler
 
@@ -19,6 +20,7 @@ services:
     #    image: ruauka/scheduler:latest
     env_file:
       - creds.env
+    restart: always
     depends_on:
       database:
         condition: service_healthy
@@ -28,13 +30,13 @@ services:
   database:
     container_name: database
     image: postgres:latest
-    restart: always
     env_file:
       - creds.env
     ports:
       - "5432:5432"
     volumes:
       - db:/var/lib/postgresql/data
+    restart: always
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -d $${POSTGRES_DB} -U $${POSTGRES_USER}"]
       interval: 5s
@@ -42,11 +44,12 @@ services:
       retries: 5
 
   queue:
-    image: rabbitmq:latest
     container_name: queue
+    image: rabbitmq:latest
     ports:
       - "5672:5672"    #amqp
       - "15672:15672"  #http
+    restart: always
     healthcheck:
       test: ["CMD", "rabbitmqctl", "status"]
       interval: 5s
