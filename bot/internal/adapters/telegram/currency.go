@@ -22,7 +22,7 @@ func (a *App) Currency(update *tg.Update) {
 	tomorrow[1], err = a.usecases.Currency.Get(EURO, time.Now().Add(time.Hour*24))
 
 	if err != nil {
-		a.MakeResponse(update, CBProblem)
+		a.MakeResponse(update, CbProblem)
 	}
 
 	if today[0] == tomorrow[0] && today[1] == tomorrow[1] {

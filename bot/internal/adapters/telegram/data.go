@@ -56,7 +56,7 @@ const (
 	BackButtonSashaMenu      = "sasha menu"
 	USD                      = "USD"
 	EURO                     = "EUR"
-	CBProblem                = "Не достучался до сайта ЦБ ❌"
+	CbProblem                = "Не достучался до сайта ЦБ ❌"
 )
 
 type State struct {
