@@ -116,6 +116,9 @@ var (
 	SashaMenuButtons = tg.NewReplyKeyboard(
 		tg.NewKeyboardButtonRow(
 			tg.NewKeyboardButton("🗜 Git"),
+			tg.NewKeyboardButton("🐧 Linux"),
+		),
+		tg.NewKeyboardButtonRow(
 			tg.NewKeyboardButton("🐳 Docker"),
 			tg.NewKeyboardButton("🕸 Kuber"),
 		),
@@ -189,7 +192,11 @@ var (
 		"docker run -it --name container_name_2 test-net alpine",
 		"ping container_name_1",
 		"-----------------Others-----------------",
+		"apt install docker.io",
+		"apt install docker-compose",
+		"docker system df",
 		"docker system prune -a --volumes",
+		"docker image prune --all",
 	}
 
 	Kuber = []string{
@@ -197,5 +204,11 @@ var (
 		"minikube status",
 		"minikube stop",
 		"minikube delete",
+	}
+
+	Linux = []string{
+		"df -h --- разбивка по занятому месту",
+		"du -hx --max-depth=15 / | grep \"[[:digit:]]\\.*G\" --- самые большие директории",
+		"journalctl --vacuum-time=1d --- очистка логов в var/log/journal до 1 дня",
 	}
 )
