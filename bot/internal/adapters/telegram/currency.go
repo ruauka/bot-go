@@ -5,6 +5,7 @@ import (
 	"time"
 
 	tg "github.com/go-telegram-bot-api/telegram-bot-api/v5"
+	"github.com/ivangurin/cbrf-go"
 )
 
 func (a *App) Currency(update *tg.Update) {
@@ -14,12 +15,12 @@ func (a *App) Currency(update *tg.Update) {
 
 	var err error
 
-	yesterday[0], err = a.usecases.Currency.Get(USD, time.Now().Add(time.Hour*-24))
-	yesterday[1], err = a.usecases.Currency.Get(EURO, time.Now().Add(time.Hour*-24))
-	today[0], err = a.usecases.Currency.Get(USD, time.Now())
-	today[1], err = a.usecases.Currency.Get(EURO, time.Now())
-	tomorrow[0], err = a.usecases.Currency.Get(USD, time.Now().Add(time.Hour*24))
-	tomorrow[1], err = a.usecases.Currency.Get(EURO, time.Now().Add(time.Hour*24))
+	yesterday[0], err = a.usecases.Currency.Get(cbrf.CurrencyUSD, time.Now().Add(time.Hour*-24))
+	yesterday[1], err = a.usecases.Currency.Get(cbrf.CurrencyEUR, time.Now().Add(time.Hour*-24))
+	today[0], err = a.usecases.Currency.Get(cbrf.CurrencyUSD, time.Now())
+	today[1], err = a.usecases.Currency.Get(cbrf.CurrencyEUR, time.Now())
+	tomorrow[0], err = a.usecases.Currency.Get(cbrf.CurrencyUSD, time.Now().Add(time.Hour*24))
+	tomorrow[1], err = a.usecases.Currency.Get(cbrf.CurrencyEUR, time.Now().Add(time.Hour*24))
 
 	if err != nil {
 		a.MakeResponse(update, CbProblem)

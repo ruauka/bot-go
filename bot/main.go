@@ -4,8 +4,6 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/matperez/go-cbr-client"
-
 	q "bot/internal/adapters/queue"
 	s "bot/internal/adapters/storage"
 	tg "bot/internal/adapters/telegram"
@@ -42,7 +40,7 @@ func main() {
 
 	storage := s.NewStorage(db)
 
-	usecase := usecases.NewUsecases(storage, queue, cbr.NewClient())
+	usecase := usecases.NewUsecases(storage, queue)
 
 	app := tg.NewApp(usecase, bot)
 	app.Start(updates)

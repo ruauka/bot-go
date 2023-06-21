@@ -4,21 +4,15 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/matperez/go-cbr-client"
+	"github.com/ivangurin/cbrf-go"
 )
 
-type currencyUsecase struct {
-	client cbr.Client
-}
+type currencyUsecase struct{}
 
-func NewCurrencyUsecase(CBRFClient cbr.Client) CurrencyUsecase {
-	return &currencyUsecase{
-		client: CBRFClient,
-	}
-}
+func NewCurrencyUsecase() CurrencyUsecase { return &currencyUsecase{} }
 
 func (c *currencyUsecase) Get(currency string, date time.Time) (float64, error) {
-	rate, err := c.client.GetRate(currency, date)
+	rate, err := cbrf.GetExchangeRate(currency, date)
 	if err != nil {
 		return 0, fmt.Errorf("connect cb error")
 	}

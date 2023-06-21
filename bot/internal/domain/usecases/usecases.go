@@ -3,8 +3,6 @@ package usecases
 import (
 	"time"
 
-	"github.com/matperez/go-cbr-client"
-
 	"bot/internal/adapters/queue"
 	"bot/internal/adapters/storage"
 	"bot/internal/domain/entities"
@@ -30,10 +28,10 @@ type Usecases struct {
 	Queue    QueueUsecase
 }
 
-func NewUsecases(storage storage.Storage, queue queue.Queue, CBRFClient cbr.Client) *Usecases {
+func NewUsecases(storage storage.Storage, queue queue.Queue) *Usecases {
 	return &Usecases{
 		Event:    NewEventUsecase(storage),
-		Currency: NewCurrencyUsecase(CBRFClient),
+		Currency: NewCurrencyUsecase(),
 		Queue:    NewQueueUsecase(queue),
 	}
 }
