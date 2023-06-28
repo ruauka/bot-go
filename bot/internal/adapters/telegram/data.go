@@ -210,5 +210,7 @@ var (
 		"df -h --- разбивка по занятому месту",
 		"du -hx --max-depth=15 / | grep \"[[:digit:]]\\.*G\" --- самые большие директории",
 		"journalctl --vacuum-time=1d --- очистка логов в var/log/journal до 1 дня",
+		"sudo lsof -i -P | grep LISTEN | grep :$PORT --- какой порт заянт",
+		"sudo kill -9 <PID>",
 	}
 )
