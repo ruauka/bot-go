@@ -15,7 +15,7 @@ database:
  			postgres:latest
 
 dockerup:
-	docker-compose up -d --build
+	docker-compose up -d
 
-dockerstop:
-	docker-compose stop
+dockerdown:
+	docker-compose down
