@@ -1,5 +1,4 @@
-![](https://img.shields.io/github/go-mod/go-version/ruauka/bot-go/bot)
-[![build](https://github.com/ruauka/bot-go/actions/workflows/pipeline.yml/badge.svg)](https://github.com/ruauka/bot-go/actions/workflows/pipeline.yml)
+[![build](https://github.com/ruauka/bot-go/actions/workflows/build.yml/badge.svg)](https://github.com/ruauka/bot-go/actions/workflows/build.yml)
 
 ## Overview
 
@@ -7,8 +6,8 @@ Telegram bot assistant.
 Used to:
 - create reminders
 - manual of console commands (git, docker, linux, k8s)
-- getting a weather forecast
-- exchange rates
+- get weather forecast
+- get exchange rates
 
 ## Architecture
 
