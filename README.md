@@ -11,6 +11,7 @@ Used to:
 - exchange rates
 
 ## Architecture
+
 <p align="left">
     <img src="assets/arc.png" width="700">
 </p>
