@@ -1,4 +1,4 @@
-
+![](https://img.shields.io/github/go-mod/go-version/ruauka/bot-go)
 [![build](https://github.com/ruauka/bot-go/actions/workflows/pipeline.yml/badge.svg)](https://github.com/ruauka/bot-go/actions/workflows/pipeline.yml)
 
 ## Overview
