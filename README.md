@@ -1,4 +1,4 @@
-[![build](https://github.com/ruauka/bot-go/actions/workflows/pipeline.yml/badge.svg)](https://github.com/ruauka/bot-go/actions/workflows/pipeline.yml)
+[![build](https://github.com/ruauka/bot-go/actions/workflows/build.yml/badge.svg)](https://github.com/ruauka/bot-go/actions/workflows/build.yml)
 
 ## Overview
 
