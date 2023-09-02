@@ -160,6 +160,7 @@ var (
 		"git rm -r --cached instance_name",
 		"git reset --hard HEAD && git clean -f",
 		"git commit --amend [-m 'new message'] -> :wq",
+		"git push origin :branch_name - удаление remote ветки",
 	}
 
 	Docker = []string{
