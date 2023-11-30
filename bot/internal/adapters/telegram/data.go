@@ -155,6 +155,7 @@ var (
 		"-----------------Branch-----------------",
 		"git branch -d branch_name",
 		"git checkout -b new_branch",
+
 		"-----------------Others-----------------",
 		"rm -rf .git",
 		"git rm -r --cached instance_name",
@@ -170,6 +171,7 @@ var (
 		"docker images",
 		"docker rmi image_name",
 		"docker rmi -f $(docker images -a -q)",
+
 		"-----------------Container-----------------",
 		"docker run -d --rm/--restart=always --name=container_name -p 8080:8000 image_name",
 		"docker run -d --rm --name=container_name -e VAR_ENV_NAME_IN_CODE=env_name image_name",
@@ -182,16 +184,19 @@ var (
 		"docker inspect container_name",
 		"docker exec -it container_name sh/bash",
 		"docker rm -f $(docker ps -a -q)",
+
 		"-----------------Volume-----------------",
 		"docker volume create volume_name",
 		"docker volume rm volume_name",
 		"docker volume ls",
 		"docker inspect volume volume_name",
+
 		"-----------------Network-----------------",
 		"docker network create --driver=bridge test-net",
 		"docker run -d -it --name container_name_1 test-net alpine",
 		"docker run -it --name container_name_2 test-net alpine",
 		"ping container_name_1",
+
 		"-----------------Others-----------------",
 		"apt install docker.io",
 		"apt install docker-compose",
@@ -201,10 +206,40 @@ var (
 	}
 
 	Kuber = []string{
+		"-----------------Minikube-----------------",
 		"minikube start",
 		"minikube status",
 		"minikube stop",
 		"minikube delete",
+
+		"-----------------General-----------------",
+		"kubectl cluster-info - проверка подключения к кластеру",
+		"minikube dashboard - ui миникуба",
+		"kubectl port-forward --address 0.0.0.0 pod/web 8000:8000 - прокинуть порты на локалку (вместо services)",
+		"kubectl get replicaset frontend -o=jsonpath='{.spec.template.spec.containers[0].image}' - проверка образа, указанного в ReplicaSet",
+		"kubectl get pods -l app=frontend -o=jsonpath='{.items[0:3].spec.containers[0].image}' - проверка образа, из которого запустились pods",
+
+		"-----------------Pod-----------------",
+		"kubectl apply -f web-pod.yaml - применение манифеста pod",
+		"kubectl apply -f web-pod.yaml && kubectl get pods -w - запуск и просмотр в консоле",
+		"kubectl get pods - посмотреть все pods",
+		"kubectl describe pod web - описание событий и атрибутов pod",
+		"kubectl exec -it web --container=container_name -- sh - провалиться в контейнер внутри pod",
+		"kubectl delete pod web - удалить pod",
+
+		"-----------------Deployment-----------------",
+		"kubectl get deployments - просмотр всех deployment",
+		"kubectl get pods -l app=paymentservice - просмотр в консоле по конкретному тегу",
+		"kubectl apply -f paymentservice-deployment.yaml | kubectl get pods -l app=paymentservice -w - запуск и просмотр в консоле по конкретному тегу",
+		"kubectl rollout status deployment/frontend - проверка прохождения readinessProbe",
+		"kubectl delete -n default deployment frontend - удалить deployment со всеми pods",
+		"kubectl delete pods -l app=paymentservice - удаление pods по конкретному тегу",
+		"kubectl delete pods -l app=paymentservice | kubectl get pods -l app=paymentservice -w - удаление pods по конкретному тегу и просморт",
+
+		"-----------------Ad-hoc-----------------",
+		"kubectl run frontend --image=ruauka/frontend:latest --restart=Never - альтернативный способ запуска ресурса (pod здесь)",
+		"kubectl run frontend --image=ruauka/frontend:latest --restart=Never --dry-run -o yaml > frontend-pod.yaml - собрать мнифест не поднимаю pod (dry-run - режим)",
+		"kubectl scale replicaset frontend --replicas=3 - увеличение реплик",
 	}
 
 	Linux = []string{
