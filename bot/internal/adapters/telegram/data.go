@@ -54,8 +54,6 @@ const (
 	BackButtonMashaOrderMenu = "masha order menu"
 	BackButtonMashaMenu      = "masha menu"
 	BackButtonSashaMenu      = "sasha menu"
-	USD                      = "USD"
-	EURO                     = "EUR"
 	CbProblem                = "Не достучался до сайта ЦБ ❌"
 )
 
@@ -235,6 +233,9 @@ var (
 		"kubectl delete -n default deployment deployment-name - удалить deployment со всеми pods",
 		"kubectl delete pods -l app=deployment-name - удаление pods по конкретному тегу",
 		"kubectl delete pods -l app=deployment-name | kubectl get pods -l app=deployment-name -w - удаление pods по конкретному тегу и просморт",
+
+		"-----------------ConfigMap-----------------",
+		"kubectl create configmap configmap-name --from-file=server.crt --from-file=server.key",
 
 		"-----------------Ad-hoc-----------------",
 		"kubectl run frontend --image=ruauka/frontend:latest --restart=Never - альтернативный способ запуска ресурса (pod здесь)",
