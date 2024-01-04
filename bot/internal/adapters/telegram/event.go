@@ -31,6 +31,7 @@ func (a *App) ChatStateHandle(update *tg.Update, state *State) {
 	case StateMeeting:
 		a.StateMeetingProcessing(update, state)
 		return
+	default:
 	}
 }
 
