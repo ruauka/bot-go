@@ -157,7 +157,9 @@ var (
 		"-----------------Others-----------------",
 		"rm -rf .git",
 		"git rm -r --cached instance_name",
-		"git reset --hard HEAD && git clean -f",
+		"git restore --staged file.txt - вернуть из индекса в untracked",
+		"git restore . && git clean -fd - отменить изменения, которые не в untracked && файлы и папки",
+		"git reset --hard HEAD && git clean -fd - удалить изменения && файлы и папки",
 		"git commit --amend [-m 'new message'] -> :wq",
 		"git push origin :branch_name - удаление remote ветки",
 	}
