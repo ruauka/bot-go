@@ -151,16 +151,18 @@ func NewState() map[int64]*State {
 var (
 	Git = []string{
 		"-----------------Branch-----------------",
-		"git branch -d branch_name",
 		"git checkout -b new_branch",
+		"git branch -d branch_name",
 
 		"-----------------Others-----------------",
 		"rm -rf .git",
-		"git rm -r --cached instance_name",
-		"git restore --staged file.txt - вернуть из индекса в untracked",
-		"git restore . && git clean -fd - отменить изменения, которые не в untracked && файлы и папки",
-		"git reset --hard HEAD && git clean -fd - удалить изменения && файлы и папки",
-		"git commit --amend [-m 'new message'] -> :wq",
+		"git rm -r --cached instance_name - удалить из репы",
+		"git restore --staged . - вернуть из индекса в untracked",
+		"git restore . && git clean -fd - отменить изменения, которые в untracked && удалить новые файлы и папки",
+		"git reset --soft HEAD - вернуть в индекс",
+		"git reset --mixed HEAD - вернуть в untracked",
+		"git reset --hard HEAD~ && git clean -fd - удалить изменения && файлы и папки",
+		"git commit --amend -> :wq - изменить последний коммит",
 		"git push origin :branch_name - удаление remote ветки",
 	}
 
