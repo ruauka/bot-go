@@ -160,11 +160,12 @@ var (
 		"git log --online - сокращенный вывод",
 		"git checkout commit_hash - переключение на коммит",
 		"git restore --staged . - вернуть из индекса в untracked",
-		"git restore . && git clean -fd - отменить изменения, которые в untracked && удалить новые файлы и папки",
+		
 		"get revert commit_hash - сделать новый, зеркальный коммит",
-		"git reset --soft HEAD~1 - вернуть в индекс",
-		"git reset --mixed HEAD~1 - вернуть в untracked",
-		"git reset --hard HEAD~1 && git clean -fd - удалить изменения && файлы и папки",
+		"git reset --soft HEAD - вернуть в индекс",
+		"git reset --mixed HEAD - вернуть в untracked",
+		"git reset --hard HEAD && git clean -fd - удалить изменения && файлы и папки",
+		"git restore . && git clean -fd - отменить изменения, которые в untracked && удалить новые файлы и папки",
 		"git commit --amend -> :wq - изменить последний коммит",
 		"git push origin :branch_name - удаление remote ветки",
 	}
