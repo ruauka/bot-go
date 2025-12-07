@@ -297,11 +297,7 @@ func isChatState(userID int64) *State {
 
 func meetingChatCheck(userID int64) bool {
 	_, ok := MeetingState[userID]
-	if ok {
-		return true
-	}
-
-	return false
+	return ok
 }
 
 func setDeleteModeState(update *tg.Update) {
