@@ -168,6 +168,8 @@ var (
 		"git restore . && git clean -fd - отменить изменения, которые в untracked && удалить новые файлы и папки",
 		"git commit --amend -> :wq - изменить последний коммит",
 		"git push origin :branch_name - удаление remote ветки",
+		"git revert --no-commit HEAD - откатить ветку на предыдущий комиит (будет создан новый коммит)",
+		"git revert --no-commit <стабильный_коммит>..HEAD - откат до конкретного комиита (будет создан новый коммит)",
 	}
 
 	Docker = []string{
