@@ -1,6 +1,6 @@
 module scheduler
 
-go 1.17
+go 1.24
 
 require (
 	github.com/golang-migrate/migrate/v4 v4.15.2
